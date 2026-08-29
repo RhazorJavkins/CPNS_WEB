@@ -11,9 +11,8 @@ import { Button } from "@/components/ui/button";
 type Q = { id: string; kategori: string; pertanyaan: string; opsi_a: string; opsi_b: string; opsi_c: string; opsi_d: string; opsi_e: string; };
 type Ans = { id: string; question_id: string; jawaban_user: string | null; is_ragu: boolean; questions: Q };
 
-export default function KerjakanRealPage({ params }: { params: { id: string } }) {
+export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
   const router = useRouter();
-  const tryoutId = params.id;
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Ans[]>([]);
   const [cur, setCur] = useState(0);
