@@ -96,8 +96,18 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
     router.push(`/tryout/result/${attemptId}`);
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-sm">Memuat soal acak dari Supabase (300 soal → ambil 110 acak)...</div>;
-  if (err) return <div className="min-h-screen flex items-center justify-center flex-col gap-3"><p className="text-sm text-red-600">{err}</p><Link href="/dashboard" className="text-sm underline">Kembali</Link></div>;
+  if (loading) return (
+    <div className="min-h-screen bg-zinc-100 flex flex-col">
+      <div className="h-14 bg-white border-b flex items-center px-4 gap-3"><div className="h-6 w-16 bg-zinc-200 animate-pulse rounded" /><div className="flex-1 h-6 w-20 bg-zinc-200 animate-pulse rounded mx-auto max-w-[120px]" /><div className="h-8 w-20 bg-zinc-200 animate-pulse rounded" /></div>
+      <div className="max-w-6xl mx-auto w-full p-6 text-center space-y-3">
+        <div className="h-4 w-48 bg-zinc-200 animate-pulse rounded mx-auto" />
+        <div className="h-3 w-64 bg-zinc-200 animate-pulse rounded mx-auto" />
+        <p className="text-sm text-zinc-500">Memuat soal acak dari Supabase (300 soal → 110 acak)...</p>
+        <p className="text-xs text-zinc-400">Jika lama &gt;5 detik, Supabase ap-northeast-2 mungkin lambat — refresh.</p>
+      </div>
+    </div>
+  );
+  if (err) return <div className="min-h-screen flex items-center justify-center flex-col gap-3 p-6"><p className="text-sm text-red-600 text-center">{err}</p><p className="text-xs text-zinc-500">Cek koneksi Supabase atau Vercel env. Rate limit? Tunggu 1 jam.</p><div className="flex gap-2"><button onClick={() => location.reload()} className="px-4 py-2 bg-blue-600 text-white rounded text-sm">Coba Lagi</button><Link href="/dashboard" className="px-4 py-2 border rounded text-sm bg-white">← Dashboard</Link></div></div>;
   if (answers.length === 0) return <div className="min-h-screen flex items-center justify-center text-sm">Tidak ada soal. Cek DB questions.</div>;
 
   const a = answers[cur];
