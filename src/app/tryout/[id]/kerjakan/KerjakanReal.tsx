@@ -5,6 +5,8 @@ import { NumberGrid } from "@/components/tryout/NumberGrid";
 import { QuestionCard } from "@/components/tryout/QuestionCard";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type Q = { id: string; kategori: string; pertanyaan: string; opsi_a: string; opsi_b: string; opsi_c: string; opsi_d: string; opsi_e: string; };
 type Ans = { id: string; question_id: string; jawaban_user: string | null; is_ragu: boolean; questions: Q };
@@ -19,6 +21,8 @@ export default function KerjakanRealPage({ params }: { params: { id: string } })
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // start attempt
   useEffect(() => {
@@ -78,10 +82,10 @@ export default function KerjakanRealPage({ params }: { params: { id: string } })
 
   const handleSubmit = async () => {
     if (!attemptId) return;
-    if (!confirm("Yakin akhiri ujian? Jawaban akan dinilai. (Bisa cek konfirmasi Batch 3 dialog lebih bagus)")) return;
+    setSubmitting(true);
     const res = await fetch("/api/attempts/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ attempt_id: attemptId }) });
     const j = await res.json();
-    if (!res.ok) { alert(j.error); return; }
+    if (!res.ok) { alert(j.error); setSubmitting(false); return; }
     router.push(`/tryout/result/${attemptId}`);
   };
 
@@ -112,7 +116,7 @@ export default function KerjakanRealPage({ params }: { params: { id: string } })
           {saving && <span className="text-xs text-zinc-400">Menyimpan...</span>}
         </div>
         <span className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded">Soal {cur + 1}/{answers.length}</span>
-        <button onClick={handleSubmit} className="text-xs bg-red-600 hover:bg-red-700 text-white rounded px-3 py-1.5 font-medium">Selesai Ujian</button>
+        <button onClick={() => setOpenConfirm(true)} className="text-xs bg-red-600 hover:bg-red-700 text-white rounded px-3 py-1.5 font-medium">Selesai Ujian</button>
       </header>
 
       <div className="flex-1 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[260px_1fr_220px] gap-3 p-3">
@@ -166,6 +170,20 @@ export default function KerjakanRealPage({ params }: { params: { id: string } })
           <p className="text-xs text-zinc-400">Attempt: {attemptId?.slice(0, 8)}... • Auto-save langsung tiap klik</p>
         </div>
       </div>
+      <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Yakin akhiri ujian?</DialogTitle>
+            <DialogDescription>
+              Terjawab {answers.filter((x) => !!x.jawaban_user).length}/{answers.length} • Ragu {answers.filter((x) => !!x.is_ragu).length} • Belum {answers.length - answers.filter((x) => !!x.jawaban_user).length}. Jawaban akan dinilai dan tidak bisa diubah lagi.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpenConfirm(false)} disabled={submitting}>Batal</Button>
+            <Button onClick={handleSubmit} disabled={submitting} className="bg-red-600 hover:bg-red-700">{submitting ? "Menilai..." : "Ya, Selesai & Nilai"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
