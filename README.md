@@ -1,36 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CPNS Web - Simulasi CAT BKN 1:1
 
-## Getting Started
+Latihan CPNS gratis mirip CAT BKN asli. Bank soal 300+ TWK TIU TKP, timer 100 menit, passing grade real TWK65 TIU80 TKP166.
 
-First, run the development server:
+**Live:** https://cpns-web-coral.vercel.app
+**Stack:** Next.js 16.3 + Tailwind 4 + Supabase (ap-northeast-2) + Vercel
 
+## Cara run lokal
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd cpns-web
+npm install
+# buat .env.local
+# NEXT_PUBLIC_SUPABASE_URL=https://tdnwqshktvlxpamdjodv.supabase.co
+# NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_...
+npm run dev # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Import soal
+```bash
+python scripts/import_soal.py # baca data/*.csv -> Supabase questions (300)
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Akun dummy
+- test.1787998017451@gmail.com / Demo1234!
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Fase 1 DONE 75% (39/52) -> update di FASE_1_CHECKLIST.md
