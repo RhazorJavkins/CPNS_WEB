@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   // cek ongoing
   const { data: ongoing } = await supabase.from("attempts").select("id").eq("user_id", user.id).eq("tryout_id", tryout_id).is("waktu_selesai", null).order("waktu_mulai", { ascending: false }).limit(1).maybeSingle();
   if (ongoing) {
-    const { data: answers } = await supabase.from("attempt_answers").select("*, questions!inner(*)").eq("attempt_id", ongoing.id);
+    const { data: answers } = await supabase.from("attempt_answers").select("*, questions!inner(*)").eq("attempt_id", ongoing.id).order("urutan", { ascending: true });
     return NextResponse.json({ attempt_id: ongoing.id, existing: true, answers });
   }
 
@@ -43,15 +43,16 @@ export async function POST(req: NextRequest) {
   if (err1 || !attempt) return NextResponse.json({ error: err1?.message || "Gagal buat attempt" }, { status: 500 });
 
   // buat attempt_answers
-  const rows = shuffled.map((q) => ({
+  const rows = shuffled.map((q, idx) => ({
     attempt_id: attempt.id,
     question_id: q.id,
+    urutan: idx + 1,
     jawaban_user: null,
     is_ragu: false,
   }));
   const { error: err2 } = await supabase.from("attempt_answers").insert(rows);
   if (err2) return NextResponse.json({ error: err2.message }, { status: 500 });
 
-  const { data: answers } = await supabase.from("attempt_answers").select("*, questions!inner(*)").eq("attempt_id", attempt.id);
+  const { data: answers } = await supabase.from("attempt_answers").select("*, questions!inner(*)").eq("attempt_id", attempt.id).order("urutan", { ascending: true });
   return NextResponse.json({ attempt_id: attempt.id, existing: false, answers, durasi_menit: pkg.durasi_menit });
 }

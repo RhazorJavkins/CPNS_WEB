@@ -12,7 +12,7 @@ export default async function PembahasanPage({ params, searchParams }: { params:
   if (!attempt) notFound();
   if (attempt.user_id !== user.id) redirect("/dashboard");
 
-  let query = supabase.from("attempt_answers").select("*, questions!inner(*)").eq("attempt_id", id).order("created_at", { ascending: true });
+  let query = supabase.from("attempt_answers").select("*, questions!inner(*)").eq("attempt_id", id).order("urutan", { ascending: true, nullsFirst: true }).order("created_at", { ascending: true });
   const { data: rows } = await query;
   if (!rows) notFound();
 
