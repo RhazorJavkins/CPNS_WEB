@@ -22,6 +22,7 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
   const [err, setErr] = useState<string | null>(null);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showGrid, setShowGrid] = useState(false);
 
   // start attempt
   useEffect(() => {
@@ -107,19 +108,20 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
 
   return (
     <div className="min-h-screen bg-zinc-100 dark:bg-zinc-950 flex flex-col">
-      <header className="h-14 bg-white dark:bg-zinc-900 border-b flex items-center px-3 md:px-4 gap-3 sticky top-0 z-10">
-        <Link href="/dashboard" className="text-xs border rounded px-2 py-1 hover:bg-zinc-50">Keluar</Link>
-        <div className="flex-1 flex items-center justify-center gap-2">
-          <span className="text-xs text-zinc-500 hidden sm:inline">Sisa Waktu</span>
+      <header className="h-14 bg-white dark:bg-zinc-900 border-b flex items-center px-3 md:px-4 gap-2 sticky top-0 z-10">
+        <Link href="/dashboard" className="text-xs border rounded px-2 py-1 hover:bg-zinc-50 hidden sm:inline">Keluar</Link>
+        <button onClick={() => setShowGrid(!showGrid)} className="lg:hidden text-xs border rounded px-2 py-1 bg-white">☰ Soal</button>
+        <div className="flex-1 flex items-center justify-center gap-2 min-w-0">
+          <span className="text-xs text-zinc-500 hidden md:inline">Sisa Waktu</span>
           <Timer seconds={durasi} onExpire={handleExpire} />
-          {saving && <span className="text-xs text-zinc-400">Menyimpan...</span>}
+          {saving && <span className="text-xs text-zinc-400 hidden sm:inline">Menyimpan...</span>}
         </div>
-        <span className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded">Soal {cur + 1}/{answers.length}</span>
-        <button onClick={() => setOpenConfirm(true)} className="text-xs bg-red-600 hover:bg-red-700 text-white rounded px-3 py-1.5 font-medium">Selesai Ujian</button>
+        <span className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded whitespace-nowrap">Soal {cur + 1}/{answers.length}</span>
+        <button onClick={() => setOpenConfirm(true)} className="text-xs bg-red-600 hover:bg-red-700 text-white rounded px-3 py-1.5 font-medium whitespace-nowrap">Selesai</button>
       </header>
 
       <div className="flex-1 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[260px_1fr_220px] gap-3 p-3">
-        <div className="bg-white dark:bg-zinc-900 border rounded-lg p-3 h-fit lg:sticky lg:top-[68px]">
+        <div className={`${showGrid ? "block" : "hidden"} lg:block bg-white dark:bg-zinc-900 border rounded-lg p-3 h-fit lg:sticky lg:top-[68px] order-2 lg:order-1`}>
           <p className="text-xs font-semibold mb-2">Daftar Soal — {answers.length}</p>
           <NumberGrid items={gridItems} onSelect={setCur} />
           <div className="flex flex-wrap gap-2 mt-3 text-xs">
@@ -130,7 +132,7 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 order-1 lg:order-2">
           <QuestionCard
             number={cur + 1}
             kategori={q.kategori}
@@ -155,7 +157,7 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border rounded-lg p-3 h-fit lg:sticky lg:top-[68px] space-y-3">
+        <div className="bg-white dark:bg-zinc-900 border rounded-lg p-3 h-fit lg:sticky lg:top-[68px] space-y-3 order-3">
           <p className="text-xs font-semibold">Info Ujian</p>
           <div className="text-xs space-y-1 text-zinc-600 dark:text-zinc-400">
             <p>Terjawab: {terjawab}/{answers.length}</p>
