@@ -1,0 +1,8 @@
+{
+  "name": "import-soal",
+  "version": "1.0.0",
+  "scripts": {
+    "import": "python scripts/import_soal.py",
+    "import:node": "node scripts/import_soal.mjs"
+  }
+}
