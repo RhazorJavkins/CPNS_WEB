@@ -9,5 +9,5 @@ export const ai = new OpenAI({
 });
 
 export const AI_MODEL = process.env.GROQ_API_KEY
-  ? "llama-3.1-70b-versatile"
+  ? "openai/gpt-oss-20b"
   : "gpt-4o-mini";
