@@ -61,6 +61,17 @@ export default async function DashboardPage() {
     return s;
   })();
 
+  // 16.4 XP & Badge: fetch profile
+  const { data: profile } = await supabase.from("profiles").select("xp, provinsi, instansi_target").eq("user_id", user.id).maybeSingle();
+  const xp = profile?.xp || 0;
+  const badges: string[] = [];
+  if (xp >= 200) badges.push("🔥 Streak Master (XP 200+)");
+  else if (xp >= 100) badges.push("⭐ Aktif (XP 100+)");
+  else if (xp >= 50) badges.push("🚀 Pemula (XP 50+)");
+  if (bestScore >= 400) badges.push("Master 400+");
+  if (avgTwk >= 90) badges.push("TWK 90+");
+  if (streak >= 7) badges.push("Streak 7 Hari 🔥");
+
   // Progress chart data
   const progressData = (attemptsAll || []).map((a: any, idx: number) => ({
     name: `#${idx + 1}`,
@@ -159,6 +170,19 @@ export default async function DashboardPage() {
             <Card className="bg-purple-50/50 dark:bg-purple-950/20"><CardHeader className="py-3"><CardDescription className="text-xs">Progress</CardDescription><CardTitle className="text-sm">{totalAttempts >= 3 ? "Cukup data" : `${3 - totalAttempts} lagi untuk grafik`}</CardTitle><p className="text-xs text-zinc-500">Kerjakan 3x biar analisis akurat</p></CardHeader></Card>
           </div>
         )}
+
+        {/* 16.4 XP & Badge */}
+        <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20 border-yellow-200">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">⭐ XP & Badge <span className="text-xs font-normal text-zinc-500">+10 latihan • +50 tryout</span></CardTitle>
+            <CardDescription className="text-xs">Kumpulin XP biar naik rank di leaderboard</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-wrap items-center gap-3">
+            <span className="text-sm font-bold bg-white dark:bg-zinc-900 border rounded px-3 py-1.5">XP: {xp}</span>
+            {badges.length > 0 ? badges.map((b) => <span key={b} className="text-xs px-2 py-1 rounded bg-white dark:bg-zinc-900 border">{b}</span>) : <span className="text-xs text-zinc-500">Belum ada badge — kerjakan 1 tryout!</span>}
+            <Link href="/leaderboard" className="ml-auto text-xs text-blue-600 underline">Lihat Leaderboard →</Link>
+          </CardContent>
+        </Card>
 
         {/* Charts: Progress + Radar */}
         {totalAttempts > 0 && (

@@ -52,5 +52,16 @@ export async function POST(req: NextRequest) {
     status_kelulusan: s.status_kelulusan,
   }).eq("id", attempt_id).select("*").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // 16.4 XP +50 untuk tryout selesai
+  try {
+    const { data: prof } = await supabase.from("profiles").select("xp").eq("user_id", user.id).maybeSingle();
+    if (prof) {
+      await supabase.from("profiles").update({ xp: (prof.xp || 0) + 50 }).eq("user_id", user.id);
+    } else {
+      await supabase.from("profiles").insert({ user_id: user.id, nama_lengkap: user.email?.split("@")[0] || "User", xp: 50 } as any);
+    }
+  } catch {}
+
   return NextResponse.json({ ok: true, attempt: updated, skor: s });
 }

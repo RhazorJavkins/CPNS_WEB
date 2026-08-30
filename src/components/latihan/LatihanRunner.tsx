@@ -125,6 +125,12 @@ export default function LatihanRunner({ mode, n, ids }: { mode: string; n: numbe
           skor_tkp: skor.tkp,
           durasi_detik: elapsed,
         } as any);
+        // 16.4 XP +10 untuk latihan selesai
+        try {
+          const { data: prof } = await supabase.from("profiles").select("xp").eq("user_id", user.id).maybeSingle();
+          if (prof) await supabase.from("profiles").update({ xp: (prof.xp || 0) + 10 }).eq("user_id", user.id);
+          else await supabase.from("profiles").insert({ user_id: user.id, nama_lengkap: user.email?.split("@")[0] || "User", xp: 10 } as any);
+        } catch {}
       }
     } catch {}
     setSubmitting(false);
