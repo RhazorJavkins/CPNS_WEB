@@ -136,7 +136,10 @@ export default async function DashboardPage() {
               <p className="font-semibold text-sm">⚡ Latihan Harian — 10 Soal / 10 Menit</p>
               <p className="text-xs opacity-90">Cepat, fokus, tanpa beban 110 soal. Pilih TWK / TIU / TKP atau campur.</p>
             </div>
-            <Link href="/latihan" className="shrink-0 bg-white text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-zinc-100">Mulai Latihan →</Link>
+            <div className="flex gap-2 shrink-0">
+              <Link href="/latihan" className="bg-white text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-zinc-100">Latihan →</Link>
+              <Link href="/leaderboard" className="bg-yellow-400 text-zinc-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-300">🏆 Rank</Link>
+            </div>
           </CardContent>
         </Card>
         {/* Stats */}
