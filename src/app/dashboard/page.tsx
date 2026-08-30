@@ -129,6 +129,16 @@ export default async function DashboardPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-6 space-y-6">
+        {/* CTA Latihan Harian */}
+        <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0">
+          <CardContent className="py-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold text-sm">⚡ Latihan Harian — 10 Soal / 10 Menit</p>
+              <p className="text-xs opacity-90">Cepat, fokus, tanpa beban 110 soal. Pilih TWK / TIU / TKP atau campur.</p>
+            </div>
+            <Link href="/latihan" className="shrink-0 bg-white text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-zinc-100">Mulai Latihan →</Link>
+          </CardContent>
+        </Card>
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <Card><CardHeader className="py-3"><CardDescription className="text-xs">Bank Soal</CardDescription><CardTitle className="text-xl">{qCount ?? 0}</CardTitle></CardHeader></Card>
