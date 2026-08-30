@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import AnalisisAI from "@/components/ai/AnalisisAI";
 
 export default async function ResultPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,6 +17,7 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
 
   const isLulus = attempt.status_kelulusan === "LULUS SKD";
   const pct = (v: number, max: number) => Math.min(100, Math.round((v / max) * 100));
+  const { data: aiReview } = await supabase.from("ai_reviews").select("*").eq("attempt_id", id).maybeSingle();
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <header className="sticky top-0 bg-white dark:bg-zinc-900 border-b">
@@ -36,6 +38,8 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
           <Card><CardHeader className="py-3"><CardTitle className="text-sm">TKP</CardTitle><p className="text-2xl font-bold">{attempt.skor_tkp ?? 0}<span className="text-xs font-normal text-zinc-500"> /225</span></p><Progress value={pct(attempt.skor_tkp||0,225)} className="mt-2" /><p className={`text-xs mt-1 ${attempt.status_tkp==="LULUS"?"text-green-600":"text-red-600"}`}>{attempt.status_tkp} (PG 166)</p></CardHeader></Card>
           <Card><CardHeader className="py-3"><CardTitle className="text-sm">TOTAL</CardTitle><p className="text-2xl font-bold">{attempt.skor_total ?? 0}<span className="text-xs font-normal text-zinc-500"> /550</span></p><Progress value={pct(attempt.skor_total||0,550)} className="mt-2" /><p className="text-xs mt-1 text-zinc-500">{isLulus ? "🎉 Lulus 3 komponen!" : "Fokus ke komponen yang TIDAK LULUS"}</p></CardHeader></Card>
         </div>
+
+        <AnalisisAI attemptId={id} initial={aiReview} />
 
         <Card>
           <CardHeader><CardTitle className="text-sm">Rincian</CardTitle></CardHeader>
