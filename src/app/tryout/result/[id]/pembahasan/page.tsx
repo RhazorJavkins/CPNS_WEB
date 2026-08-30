@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import TutorChat from "@/components/ai/TutorChat";
+import GenerateSoalButton from "@/components/ai/GenerateSoalButton";
 
 export default async function PembahasanPage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams: Promise<{ filter?: string }> }) {
   const { id } = await params;
@@ -86,6 +87,9 @@ export default async function PembahasanPage({ params, searchParams }: { params:
                 {isTKP && <p className="text-xs text-zinc-500 mt-1">TKP: skor tertinggi (5) adalah jawaban paling profesional/proaktif sesuai nilai ASN BerAKHLAK.</p>}
               </div>
               <TutorChat questionId={q.id} />
+              <div className="mt-2">
+                <GenerateSoalButton questionId={q.id} kategori={q.kategori} />
+              </div>
             </div>
           );
         })}

@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import Link from "next/link";
 import { skorSoal, hitungSkor } from "@/lib/scoring";
+import GenerateSoalButton from "@/components/ai/GenerateSoalButton";
 
 type Q = {
   id: string;
@@ -21,7 +22,7 @@ type Q = {
   pembahasan: string | null;
 };
 
-export default function LatihanRunner({ mode, n }: { mode: string; n: number }) {
+export default function LatihanRunner({ mode, n, ids }: { mode: string; n: number; ids?: string[] }) {
   const [questions, setQuestions] = useState<Q[]>([]);
   const [answers, setAnswers] = useState<Record<string, string | null>>({});
   const [ragu, setRagu] = useState<Record<string, boolean>>({});
@@ -41,12 +42,19 @@ export default function LatihanRunner({ mode, n }: { mode: string; n: number }) 
     try {
       let qs: Q[] = [];
       const limitFetch = 80;
-      if (mode === "salah") {
+      if (mode === "custom" && ids && ids.length > 0) {
+        const { data, error } = await supabase.from("questions").select("*").in("id", ids);
+        if (error) throw error;
+        qs = (data as Q[]) || [];
+        // preserve order sesuai ids
+        const order = new Map(ids.map((id, i) => [id, i]));
+        qs.sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+      } else if (mode === "salah") {
         // ambil soal yang pernah salah
         const { data: salah } = await supabase.from("attempt_answers").select("question_id").eq("is_benar", false).limit(50);
-        const ids = (salah || []).map((r: any) => r.question_id).filter(Boolean);
-        if (ids.length === 0) throw new Error("Belum ada soal salah — kerjakan tryout/latihan dulu biar ada data salah.");
-        const unique = [...new Set(ids)] as string[];
+        const salahIds = (salah || []).map((r: any) => r.question_id).filter(Boolean);
+        if (salahIds.length === 0) throw new Error("Belum ada soal salah — kerjakan tryout/latihan dulu biar ada data salah.");
+        const unique = [...new Set(salahIds)] as string[];
         const pickIds = unique.sort(() => 0.5 - Math.random()).slice(0, n);
         const { data, error } = await supabase.from("questions").select("*").in("id", pickIds);
         if (error) throw error;
@@ -72,7 +80,7 @@ export default function LatihanRunner({ mode, n }: { mode: string; n: number }) 
     } finally {
       setLoading(false);
     }
-  }, [mode, n]);
+  }, [mode, n, ids]);
 
   useEffect(() => { fetchQuestions(); }, [fetchQuestions]);
 
@@ -180,9 +188,9 @@ export default function LatihanRunner({ mode, n }: { mode: string; n: number }) 
                       })}
                     </div>
                     {q.pembahasan && <p className="text-xs mt-2 p-2 bg-white border rounded">💡 {q.pembahasan}</p>}
-                    <div className="mt-2 flex gap-2">
-                      <button onClick={() => alert("Fitur Tanya AI Tutor akan hadir di 15.x — sekarang pakai /api/ai/tutor manual")} className="text-xs border rounded px-2 py-1 bg-white hover:bg-zinc-50">💬 Tanya AI Tutor</button>
-                      <button onClick={() => alert("Generate 5 Soal Mirip — fitur 15.x (api/ai/generate-soal)")} className="text-xs border rounded px-2 py-1 bg-white hover:bg-zinc-50">🔄 Generate 5 Soal Mirip</button>
+                    <div className="mt-2 flex gap-2 flex-wrap">
+                      <button onClick={() => alert("Fitur Tanya AI Tutor: pakai tombol 💬 di pembahasan Tryout")} className="text-xs border rounded px-2 py-1 bg-white hover:bg-zinc-50">💬 Tanya AI Tutor</button>
+                      <GenerateSoalButton questionId={q.id} kategori={q.kategori} />
                     </div>
                   </div>
                 );
