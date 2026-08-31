@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import AnalisisAI from "@/components/ai/AnalisisAI";
 import CertificateCard from "@/components/certificate/CertificateCard";
+import ShareCard from "@/components/share/ShareCard";
 
 export default async function ResultPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -53,6 +54,25 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
           tanggal={attempt.waktu_selesai ? new Date(attempt.waktu_selesai).toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" }) : ""}
         />
         {(attempt as any).tryout_packages?.is_tryout_akbar && <p className="text-xs text-center text-zinc-500">🏆 Sertifikat Tryout Akbar — leaderboard freeze 21.00 WIB</p>}
+
+        {/* 18.1-18.2 Shareable Result Card 1080x1920 */}
+        <Card>
+          <CardHeader><CardTitle className="text-sm flex items-center gap-2">📸 Share Hasil ke IG Story</CardTitle></CardHeader>
+          <CardContent>
+            <ShareCard
+              skor={attempt.skor_total ?? 0}
+              twk={attempt.skor_twk ?? 0}
+              tiu={attempt.skor_tiu ?? 0}
+              tkp={attempt.skor_tkp ?? 0}
+              status={attempt.status_kelulusan || "SELESAI"}
+              statusTwk={attempt.status_twk || "-"}
+              statusTiu={attempt.status_tiu || "-"}
+              statusTkp={attempt.status_tkp || "-"}
+              judul={(attempt as any).tryout_packages?.judul || "Tryout SKD"}
+              attemptId={id}
+            />
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader><CardTitle className="text-sm">Rincian</CardTitle></CardHeader>
