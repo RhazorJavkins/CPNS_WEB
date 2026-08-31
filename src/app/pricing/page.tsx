@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import PricingCheckout from "@/components/pricing/PricingCheckout";
 
 export default function PricingPage() {
   return (
@@ -50,8 +51,7 @@ export default function PricingPage() {
                 <li>🚀 Leaderboard Provinsi/Instansi</li>
                 <li>✅ <strong>Tanpa iklan</strong></li>
               </ul>
-              <Link href="/pricing#checkout" className="block text-center mt-6 bg-blue-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-blue-700">Upgrade Premium →</Link>
-              <p className="text-xs text-center text-zinc-500 mt-2">Bayar QRIS / VA / Gopay via Midtrans (segera)</p>
+              <div className="mt-6"><PricingCheckout /></div>
             </CardContent>
           </Card>
         </div>

@@ -7,6 +7,15 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // 20.5 kuota generate 1+1 max2 — premium bypass
+  const { data: prof } = await supabase.from("profiles").select("is_premium, premium_until").eq("user_id", user.id).maybeSingle();
+  const isPremium = prof?.is_premium && (!prof.premium_until || new Date(prof.premium_until).getTime() > Date.now());
+  if (!isPremium) {
+    const { getKuota } = await import("@/lib/kuota");
+    const kuota = await getKuota(user.id, "generate");
+    if (!kuota.allowed) return NextResponse.json({ error: `Kuota generate habis (${kuota.used}/${kuota.totalAllowed} hari ini). Nonton iklan 30 detik untuk +1 atau upgrade Premium.`, kuota }, { status: 429 });
+  }
+
   const { question_id, jumlah = 5 } = await req.json();
   if (!question_id) return NextResponse.json({ error: "question_id required" }, { status: 400 });
   const n = Math.min(Math.max(Number(jumlah) || 5, 1), 5);
@@ -14,11 +23,7 @@ export async function POST(req: NextRequest) {
   const { data: q } = await supabase.from("questions").select("*").eq("id", question_id).single();
   if (!q) return NextResponse.json({ error: "Soal tidak ditemukan" }, { status: 404 });
 
-  // rate limit 10/hari untuk generate
-  const { count } = await supabase.from("questions").select("id", { count: "exact", head: true }).eq("is_ai_generated", true).gte("created_at", new Date(Date.now() - 24 * 3600 * 1000).toISOString());
-  // hitung via generated_from user? simple count global, tapi batasi per user via created_at + user check impossible (no user_id col). Jadi batasi via api call count dummy: pakai chat_tutor count sebagai proxy atau langsung izinkan 10.
-  // Untuk sekarang: batasi 10 generate per hari per user via checking jumlah soal AI yang generated_from = question_id hari ini dibuat user? skip strict, pakai 20/hari global
-  if ((count || 0) >= 50) return NextResponse.json({ error: "Limit generate harian tercapai (50/hari global). Coba besok." }, { status: 429 });
+  // legacy global rate limit removed — now handled by kuota 1+1 max2 above (via getKuota)
 
   const isTKP = q.kategori === "TKP";
   const skorInfo = isTKP ? `Skor TKP: ${JSON.stringify(q.skor_tkp)}` : `Kunci: ${q.kunci_jawaban}`;

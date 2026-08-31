@@ -8,6 +8,15 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // 20.5 kuota: analisis 1+1 max2 (dummy 30dtk) — premium bypass
+  const { data: prof } = await supabase.from("profiles").select("is_premium, premium_until").eq("user_id", user.id).maybeSingle();
+  const isPremium = prof?.is_premium && (!prof.premium_until || new Date(prof.premium_until).getTime() > Date.now());
+  if (!isPremium) {
+    const { getKuota } = await import("@/lib/kuota");
+    const kuota = await getKuota(user.id, "analisis");
+    if (!kuota.allowed) return NextResponse.json({ error: `Kuota analisis habis (${kuota.used}/${kuota.totalAllowed} hari ini). Nonton iklan 30 detik untuk +1 atau upgrade Premium.`, kuota }, { status: 429 });
+  }
+
   const { attempt_id } = await req.json();
   if (!attempt_id) return NextResponse.json({ error: "attempt_id required" }, { status: 400 });
 
@@ -15,9 +24,7 @@ export async function POST(req: NextRequest) {
   const { data: cached } = await supabase.from("ai_reviews").select("*").eq("attempt_id", attempt_id).maybeSingle();
   if (cached) return NextResponse.json({ cached: true, data: cached });
 
-  // rate limit: max 5 per user per day (simple)
-  const { count } = await supabase.from("ai_reviews").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", new Date(Date.now() - 24*3600*1000).toISOString());
-  if ((count || 0) >= 10) return NextResponse.json({ error: "Rate limit: max 10 analisis/hari. Coba besok." }, { status: 429 });
+  // rate limit: max 5 per user per day (simple) — deprecated, now handled by kuota 1+1 max2 above
 
   const { data: attempt } = await supabase.from("attempts").select("*").eq("id", attempt_id).single();
   if (!attempt || attempt.user_id !== user.id) return NextResponse.json({ error: "Attempt not found" }, { status: 404 });

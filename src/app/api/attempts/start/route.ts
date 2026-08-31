@@ -13,6 +13,15 @@ export async function POST(req: NextRequest) {
   const { data: pkg } = await supabase.from("tryout_packages").select("*").eq("id", tryout_id).single();
   if (!pkg) return NextResponse.json({ error: "Paket tidak ditemukan" }, { status: 404 });
 
+  // 20.5 kuota tryout 1+1 max3 (15dtk) — premium bypass
+  const { data: profTryout } = await supabase.from("profiles").select("is_premium, premium_until").eq("user_id", user.id).maybeSingle();
+  const isPremiumTryout = profTryout?.is_premium && (!profTryout.premium_until || new Date(profTryout.premium_until).getTime() > Date.now());
+  if (!isPremiumTryout) {
+    const { getKuota } = await import("@/lib/kuota");
+    const kuota = await getKuota(user.id, "tryout");
+    if (!kuota.allowed) return NextResponse.json({ error: `Kuota tryout habis (${kuota.used}/${kuota.totalAllowed} hari ini). Nonton iklan 15 detik untuk +1 atau upgrade Premium.`, kuota }, { status: 429 });
+  }
+
   // cek ongoing
   const { data: ongoing } = await supabase.from("attempts").select("id").eq("user_id", user.id).eq("tryout_id", tryout_id).is("waktu_selesai", null).order("waktu_mulai", { ascending: false }).limit(1).maybeSingle();
   if (ongoing) {
