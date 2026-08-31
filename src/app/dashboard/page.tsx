@@ -200,10 +200,10 @@ export default async function DashboardPage() {
 
         {/* Tryout list */}
         <div>
-          <h2 className="font-semibold mb-3">Tryout Tersedia</h2>
-          {packages && packages.length > 0 ? (
+          <h2 className="font-semibold mb-3">Tryout SKD Tersedia</h2>
+          {packages && packages.filter((p:any)=>!p.judul.includes("SKB")).length > 0 ? (
             <div className="grid md:grid-cols-2 gap-4">
-              {packages.map((p: any) => (
+              {packages.filter((p:any)=>!p.judul.includes("SKB")).map((p: any) => (
                 <Card key={p.id} className="hover:shadow-md transition">
                   <CardHeader>
                     <CardTitle className="text-base flex items-center gap-2">{p.judul} {p.is_tryout_akbar && <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded">Akbar</span>}</CardTitle>
@@ -220,6 +220,28 @@ export default async function DashboardPage() {
             <Card><CardContent className="py-8 text-center text-sm text-zinc-500">
               Belum ada paket tryout. {qCount === 0 ? "Bank soal masih kosong — import dulu via scripts/import_soal.py" : "Buat paket di Supabase: insert into tryout_packages (judul,jumlah_soal,durasi_menit) values ('Tryout SKD #1',110,100)"}
             </CardContent></Card>
+          )}
+        </div>
+        {/* SKB Section */}
+        <div>
+          <h2 className="font-semibold mb-3">📚 Tryout SKB — Pilih Formasi</h2>
+          {packages && packages.filter((p:any)=>p.judul.includes("SKB")).length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-4">
+              {packages.filter((p:any)=>p.judul.includes("SKB")).map((p: any) => (
+                <Card key={p.id} className="hover:shadow-md transition border-indigo-200">
+                  <CardHeader>
+                    <CardTitle className="text-sm flex items-center gap-2">{p.judul.includes("Guru")?"👩‍🏫":p.judul.includes("Nakes")?"🩺":"💻"} {p.judul}</CardTitle>
+                    <CardDescription className="text-xs">{p.deskripsi}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex items-center justify-between">
+                    <span className="text-xs text-zinc-500">{p.jumlah_soal} soal • {p.durasi_menit} menit</span>
+                    <Link href={`/tryout/${p.id}`} className="inline-flex items-center justify-center rounded-lg bg-indigo-600 text-white px-3 py-1.5 text-xs font-medium hover:bg-indigo-700">Mulai SKB →</Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card><CardContent className="py-6 text-center text-sm text-zinc-500">SKB belum tersedia — tunggu update formasi.</CardContent></Card>
           )}
         </div>
 
