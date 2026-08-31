@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import LandingAkbarWrapper from "@/components/akbar/LandingAkbarWrapper";
+import HeroSection from "@/components/landing/HeroSection";
 
 function FAQSchema() {
   const faq = {
@@ -34,72 +34,17 @@ export default function Home() {
       </header>
 
       {/* Hero */}
+      <HeroSection />
       <LandingAkbarWrapper />
       <section className="flex-1 bg-white dark:bg-zinc-900">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs font-medium mb-4">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              Simulasi CAT BKN 2026 • 110 Soal • 100 Menit
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
-              Latihan CPNS <span className="text-blue-600">Mirip Asli</span> — Skor Langsung, Pembahasan Lengkap
-            </h1>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Bank soal 900+ TWK TIU TKP SKB kurasi, timer 100 menit persis CAT BKN, passing grade real <span className="font-semibold text-zinc-900 dark:text-white">TWK 65 • TIU 80 • TKP 166</span>. Gratis 1x tryout/hari, upgrade premium untuk AI Coach.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Link href="/dashboard" className="inline-flex items-center justify-center h-12 px-8 text-base bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Mulai Tryout Gratis →</Link>
-              <Link href="/login" className="inline-flex items-center justify-center h-12 px-6 border rounded-lg text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800">Sudah punya akun? Masuk</Link>
-            </div>
-            <p className="mt-3 text-xs text-zinc-500">Tanpa kartu kredit • Hasil langsung • Bisa di HP</p>
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card><CardHeader><CardTitle className="text-base">Simulasi CAT realistis</CardTitle><CardDescription>Timer, navigasi soal, dan hasil otomatis untuk melatih ritme sebelum hari ujian.</CardDescription></CardHeader></Card>
+            <Card><CardHeader><CardTitle className="text-base">Analisis yang bisa ditindaklanjuti</CardTitle><CardDescription>Lihat komponen yang perlu diperbaiki, bukan hanya angka skor total.</CardDescription></CardHeader></Card>
+            <Card><CardHeader><CardTitle className="text-base">SKD sampai SKB</CardTitle><CardDescription>Latihan SKD dan tiga formasi SKB dalam satu akun.</CardDescription></CardHeader></Card>
           </div>
-
-          {/* Feature cards */}
-          <div className="grid md:grid-cols-3 gap-4 mt-12">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <span className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded flex items-center justify-center text-sm">⏱️</span>
-                  Simulasi CAT 1:1
-                </CardTitle>
-                <CardDescription>110 soal acak, grid 1-110 warna-warni, tombol ragu-ragu, auto-submit. Mirip cat.bkn.go.id 95%</CardDescription>
-              </CardHeader>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <span className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded flex items-center justify-center text-sm">📚</span>
-                  Bank Soal 900+
-                </CardTitle>
-                <CardDescription>TWK 300 • TIU 100 • TKP 100 • SKB 600 (Guru/Nakes/Teknis). Kurasi FR 2024, kisi-kisi Permenpan RB No.6/2024 + pembahasan HOTS</CardDescription>
-              </CardHeader>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <span className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded flex items-center justify-center text-sm">🎯</span>
-                  Passing Grade Real
-                </CardTitle>
-                <CardDescription>Skor TWK 65, TIU 80, TKP 166. Status LULUS/TIDAK per komponen + grafik radar kelemahan</CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-
-          {/* Social proof */}
-          <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-zinc-600 dark:text-zinc-400">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-zinc-900 dark:text-white">900+</span> soal kurasi
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-zinc-900 dark:text-white">100 menit</span> timer CAT
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-zinc-900 dark:text-white">550</span> skor maksimal
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-zinc-900 dark:text-white">Gratis</span> selamanya (1 tryout/hari)
-            </div>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <span><strong className="text-zinc-900 dark:text-white">900+</strong> soal</span><span><strong className="text-zinc-900 dark:text-white">110</strong> soal simulasi</span><span><strong className="text-zinc-900 dark:text-white">100 menit</strong> timer CAT</span><span><strong className="text-zinc-900 dark:text-white">3</strong> formasi SKB</span>
           </div>
         </div>
       </section>
