@@ -131,6 +131,7 @@ Return HANYA JSON array valid, tanpa markdown, tanpa penjelasan lain. Format:
     skor_tkp: isTKP ? (g.skor_tkp || q.skor_tkp) : null,
     is_ai_generated: true,
     generated_from: q.id,
+    user_id: user.id,
   }));
 
   const { data: inserted, error } = await supabase.from("questions").insert(toInsert).select("id, kategori, pertanyaan");

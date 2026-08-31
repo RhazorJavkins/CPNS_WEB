@@ -25,7 +25,7 @@ export async function getKuota(userId: string, jenis: string) {
     const { count } = await supabase.from("ai_reviews").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", today.toISOString());
     used = count || 0;
   } else if (jenis === "generate") {
-    const { count } = await supabase.from("questions").select("id", { count: "exact", head: true }).eq("is_ai_generated", true).gte("created_at", today.toISOString()); // approx
+    const { count } = await supabase.from("questions").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", today.toISOString());
     used = count || 0;
   } else if (jenis === "chat") {
     const { count } = await supabase.from("chat_tutor").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", today.toISOString());

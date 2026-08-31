@@ -78,7 +78,7 @@ export default function PricingPage() {
         <div className="max-w-3xl mx-auto mt-8 space-y-3">
           <h3 className="font-semibold">FAQ</h3>
           <details className="border rounded p-3 bg-white dark:bg-zinc-900"><summary className="text-sm font-medium cursor-pointer">Iklan 15/30 detik itu apa?</summary><p className="text-sm text-zinc-600 mt-2">Dummy placeholder — countdown 15 detik (tryout/latihan/chat) atau 30 detik (analisis/generate) lalu klik Klaim Kuota. Nanti diganti AdSense ca-pub-xxx di 1 file AdRewardModal.tsx</p></details>
-          <details className="border rounded p-3 bg-white dark:bg-zinc-900"><summary className="text-sm font-medium cursor-pointer">Kapan Midtrans aktif?</summary><p className="text-sm text-zinc-600 mt-2">Minggu 7 — setelah /api/payment/create + webhook. Sekarang tombol Upgrade masih dummy.</p></details>
+          <details className="border rounded p-3 bg-white dark:bg-zinc-900"><summary className="text-sm font-medium cursor-pointer">Kapan Midtrans aktif?</summary><p className="text-sm text-zinc-600 mt-2">Minggu 7 — checkout sudah aktif (mode sandbox — auto-settle untuk testing, ganti `MIDTRANS_SERVER_KEY` production di Vercel untuk live billing).</p></details>
           <details className="border rounded p-3 bg-white dark:bg-zinc-900"><summary className="text-sm font-medium cursor-pointer">Bisa ganti paket?</summary><p className="text-sm text-zinc-600 mt-2">Ya, FREE bisa upgrade kapan saja. Premium bulanan bisa diperpanjang.</p></details>
         </div>
 

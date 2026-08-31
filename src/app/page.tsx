@@ -40,13 +40,13 @@ export default function Home() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs font-medium mb-4">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              Simulasi CAT BKN 2024 • 110 Soal • 100 Menit
+              Simulasi CAT BKN 2026 • 110 Soal • 100 Menit
             </div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
               Latihan CPNS <span className="text-blue-600">Mirip Asli</span> — Skor Langsung, Pembahasan Lengkap
             </h1>
             <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Bank soal 300+ TWK TIU TKP kurasi, timer 100 menit persis CAT BKN, passing grade real <span className="font-semibold text-zinc-900 dark:text-white">TWK 65 • TIU 80 • TKP 166</span>. Gratis 1x tryout/hari, upgrade premium untuk AI Coach.
+              Bank soal 900+ TWK TIU TKP SKB kurasi, timer 100 menit persis CAT BKN, passing grade real <span className="font-semibold text-zinc-900 dark:text-white">TWK 65 • TIU 80 • TKP 166</span>. Gratis 1x tryout/hari, upgrade premium untuk AI Coach.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Link href="/dashboard" className="inline-flex items-center justify-center h-12 px-8 text-base bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Mulai Tryout Gratis →</Link>
@@ -70,9 +70,9 @@ export default function Home() {
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <span className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded flex items-center justify-center text-sm">📚</span>
-                  Bank Soal 300+
+                  Bank Soal 900+
                 </CardTitle>
-                <CardDescription>TWK 100 • TIU 100 • TKP 100. Kurasi dari FR 2024, kisi-kisi Permenpan RB No.6/2024 + pembahasan HOTS</CardDescription>
+                <CardDescription>TWK 300 • TIU 100 • TKP 100 • SKB 600 (Guru/Nakes/Teknis). Kurasi FR 2024, kisi-kisi Permenpan RB No.6/2024 + pembahasan HOTS</CardDescription>
               </CardHeader>
             </Card>
             <Card>
@@ -89,7 +89,7 @@ export default function Home() {
           {/* Social proof */}
           <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-zinc-600 dark:text-zinc-400">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-zinc-900 dark:text-white">300+</span> soal kurasi
+              <span className="font-semibold text-zinc-900 dark:text-white">900+</span> soal kurasi
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-zinc-900 dark:text-white">100 menit</span> timer CAT

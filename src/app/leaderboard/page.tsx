@@ -137,7 +137,7 @@ export default function LeaderboardPage() {
 
         <Card className="border-dashed">
           <CardContent className="py-4 text-xs text-zinc-500">
-            Tips: Kerjakan Tryout Akbar tiap Minggu 19.00 WIB untuk rank khusus Akbar. Badge “Master 400+” butuh skor_total ≥400, “Streak 7 Hari” butuh 7 hari latihan beruntun (XP +10/latihan, +50/tryout).
+            Tips: Kerjakan Tryout Akbar tiap Minggu 19.00 WIB untuk rank khusus Akbar. Badge “Master 400+” butuh skor total ≥400, “Streak 7 Hari” butuh 7 hari latihan beruntun (XP +10/latihan, +50/tryout).
           </CardContent>
         </Card>
       </main>
