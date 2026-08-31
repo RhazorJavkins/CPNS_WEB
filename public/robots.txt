@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://cpns-web-coral.vercel.app
+
+# Sitemaps
+Sitemap: https://cpns-web-coral.vercel.app/sitemap.xml

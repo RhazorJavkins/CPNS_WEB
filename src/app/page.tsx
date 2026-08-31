@@ -3,6 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import LandingAkbarWrapper from "@/components/akbar/LandingAkbarWrapper";
 
+function FAQSchema() {
+  const faq = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      { "@type": "Question", name: "Berapa passing grade SKD CPNS 2026?", acceptedAnswer: { "@type": "Answer", text: "TWK 65, TIU 80, TKP 166, total 311. SKB 40% bobot akhir." } },
+      { "@type": "Question", name: "Berapa soal dan waktu SKD?", acceptedAnswer: { "@type": "Answer", text: "110 soal 100 menit: TWK 30, TIU 35, TKP 45." } },
+      { "@type": "Question", name: "Apakah CPNS Web gratis?", acceptedAnswer: { "@type": "Answer", text: "Gratis 1 tryout/hari + 3 latihan/hari, bisa nonton iklan 15 detik untuk tambah kuota." } },
+    ],
+  };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />;
+}
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -122,6 +135,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
+      <FAQSchema />
       <footer className="bg-white dark:bg-zinc-900 border-t">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <p className="text-xs text-zinc-500 leading-relaxed">
