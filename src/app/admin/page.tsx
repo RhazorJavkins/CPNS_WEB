@@ -24,6 +24,10 @@ export default async function AdminPage() {
   const { data: pkgs } = await supabase.from("tryout_packages").select("id, judul, jumlah_soal, durasi_menit, is_tryout_akbar, akbar_start, akbar_end, created_at").order("created_at", { ascending: false }).limit(20);
   const { count: qCount } = await supabase.from("questions").select("id", { count: "exact", head: true });
   const { count: attemptsCount } = await supabase.from("attempts").select("id", { count: "exact", head: true });
+  const { count: subsCount } = await supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status","active");
+  const { count: aiCount } = await supabase.from("ai_reviews").select("id", { count: "exact", head: true });
+  const since = new Date(Date.now()-24*3600*1000).toISOString();
+  const { count: adsToday } = await supabase.from("ad_rewards").select("id", { count:"exact", head:true}).gte("rewarded_at", since);
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -42,6 +46,12 @@ export default async function AdminPage() {
           <Card><CardHeader className="py-3"><p className="text-xs text-zinc-500">Bank Soal</p><CardTitle className="text-lg">{qCount ?? 0}</CardTitle></CardHeader></Card>
           <Card><CardHeader className="py-3"><p className="text-xs text-zinc-500">Total Attempts</p><CardTitle className="text-lg">{attemptsCount ?? 0}</CardTitle></CardHeader></Card>
           <Card><CardHeader className="py-3"><p className="text-xs text-zinc-500">Login sebagai</p><p className="text-xs font-medium truncate">{user.email}</p></CardHeader></Card>
+        </div>
+        <div className="grid grid-cols-4 gap-3">
+          <Card><CardHeader className="py-3"><p className="text-xs text-zinc-500">Subs Aktif</p><CardTitle className="text-lg">{subsCount ?? 0}</CardTitle><p className="text-xs text-zinc-400">est Rp{((subsCount??0)*49000).toLocaleString("id-ID")}</p></CardHeader></Card>
+          <Card><CardHeader className="py-3"><p className="text-xs text-zinc-500">Ads Hari Ini</p><CardTitle className="text-lg">{adsToday ?? 0}</CardTitle></CardHeader></Card>
+          <Card><CardHeader className="py-3"><p className="text-xs text-zinc-500">AI Reviews</p><CardTitle className="text-lg">{aiCount ?? 0}</CardTitle><p className="text-xs text-zinc-400">Groq log</p></CardHeader></Card>
+          <Card><CardHeader className="py-3"><p className="text-xs text-zinc-500">Tools</p><div className="flex flex-col gap-1 mt-1"><Link href="/admin/soal" className="text-xs bg-blue-600 text-white px-2 py-1 rounded text-center">Kelola Soal →</Link><Link href="/admin/tryout/new" className="text-xs bg-zinc-800 text-white px-2 py-1 rounded text-center">Tryout Baru →</Link></div></CardHeader></Card>
         </div>
         <Card>
           <CardHeader><CardTitle className="text-sm">Paket Tryout (20 terbaru)</CardTitle></CardHeader>
