@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import LandingAkbarWrapper from "@/components/akbar/LandingAkbarWrapper";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       </header>
 
       {/* Hero */}
+      <LandingAkbarWrapper />
       <section className="flex-1 bg-white dark:bg-zinc-900">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
           <div className="max-w-3xl">

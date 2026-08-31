@@ -35,10 +35,12 @@ export async function POST(req: NextRequest) {
   const shuffled = shuffle(allQ);
 
   // buat attempt
+  const isAkbarPkg = (pkg as any).is_tryout_akbar === true;
   const { data: attempt, error: err1 } = await supabase.from("attempts").insert({
     user_id: user.id,
     tryout_id: pkg.id,
     waktu_mulai: new Date().toISOString(),
+    is_tryout_akbar: isAkbarPkg,
   }).select("id").single();
   if (err1 || !attempt) return NextResponse.json({ error: err1?.message || "Gagal buat attempt" }, { status: 500 });
 

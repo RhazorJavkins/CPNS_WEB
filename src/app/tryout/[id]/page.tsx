@@ -11,7 +11,15 @@ export default async function TryoutDetailPage({ params }: { params: Promise<{ i
   if (!pkg) notFound();
   const { count: qCount } = await supabase.from("questions").select("id", { count: "exact", head: true });
   // cek attempt belum selesai
-  const { data: ongoing } = await supabase.from("attempts").select("id").eq("user_id", user.id).eq("tryout_package_id", id).is("waktu_selesai", null).limit(1).maybeSingle();
+  const { data: ongoing } = await supabase.from("attempts").select("id").eq("user_id", user.id).eq("tryout_id", id).is("waktu_selesai", null).limit(1).maybeSingle();
+  // 17.3 window check untuk Tryout Akbar
+  const isAkbar = (pkg as any).is_tryout_akbar === true;
+  const akbarStart = (pkg as any).akbar_start ? new Date((pkg as any).akbar_start).getTime() : null;
+  const akbarEnd = (pkg as any).akbar_end ? new Date((pkg as any).akbar_end).getTime() : null;
+  const now = Date.now();
+  const isBeforeWindow = isAkbar && akbarStart && now < akbarStart;
+  const isAfterWindow = isAkbar && akbarEnd && now > akbarEnd;
+  const isLiveWindow = isAkbar && akbarStart && akbarEnd && now >= akbarStart && now <= akbarEnd;
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <header className="sticky top-0 bg-white dark:bg-zinc-900 border-b">
@@ -21,7 +29,8 @@ export default async function TryoutDetailPage({ params }: { params: Promise<{ i
         </div>
       </header>
       <main className="max-w-3xl mx-auto px-4 py-8">
-        <h1 className="text-xl font-bold">{pkg.judul}</h1>
+        {isAkbar && <div className={`mb-4 rounded-lg border p-3 text-sm ${isLiveWindow ? "bg-green-50 border-green-300 text-green-800" : isBeforeWindow ? "bg-blue-50 border-blue-200 text-blue-800" : "bg-zinc-100 border-zinc-300 text-zinc-600"}`}>{isLiveWindow ? "🔴 LIVE — Window Akbar aktif (Minggu 19.00-21.00 WIB). Kerjakan sekarang!" : isBeforeWindow ? `🔜 Tryout Akbar — window dibuka ${new Date((pkg as any).akbar_start).toLocaleString("id-ID")} WIB` : `🔒 Window Akbar sudah berakhir ${akbarEnd ? new Date((pkg as any).akbar_end).toLocaleString("id-ID") : ""} — leaderboard freeze`}</div>}
+        <h1 className="text-xl font-bold flex items-center gap-2">{pkg.judul} {isAkbar && <span className="text-xs bg-red-600 text-white px-2 py-1 rounded">Akbar</span>}</h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{pkg.deskripsi}</p>
         <div className="flex gap-3 mt-3 text-xs">
           <span className="px-2 py-1 bg-white border rounded">{pkg.jumlah_soal} soal</span>
@@ -42,9 +51,15 @@ export default async function TryoutDetailPage({ params }: { params: Promise<{ i
             <li>Grid 1-110: putih belum, hijau sudah, kuning ragu, biru aktif</li>
             <li>Bisa tandai Ragu-ragu & Hapus Jawaban</li>
           </ul>
+          {isBeforeWindow ? (
+            <div className="mt-6 p-3 bg-zinc-100 border rounded text-sm text-zinc-600 text-center">Belum waktunya — tombol Mulai aktif saat window 19.00-21.00 WIB</div>
+          ) : isAfterWindow ? (
+            <div className="mt-6 p-3 bg-zinc-100 border rounded text-sm text-zinc-600 text-center">Window berakhir — lihat leaderboard Akbar <Link href="/leaderboard?akbar=true" className="text-blue-600 underline">di sini</Link></div>
+          ) : (
           <Link href={`/tryout/${id}/kerjakan`} className="inline-flex mt-6 w-full justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-3 font-medium">
             Mulai Tryout Sekarang →
           </Link>
+          )}
           <p className="text-xs text-center text-zinc-400 mt-2">Batch 1: UI dummy (Batch 2 akan sambung ke DB & acak soal)</p>
         </div>
       </main>

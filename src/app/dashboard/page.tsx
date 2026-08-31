@@ -206,8 +206,8 @@ export default async function DashboardPage() {
               {packages.map((p: any) => (
                 <Card key={p.id} className="hover:shadow-md transition">
                   <CardHeader>
-                    <CardTitle className="text-base">{p.judul}</CardTitle>
-                    <CardDescription>{p.deskripsi || `${p.jumlah_soal} soal • ${p.durasi_menit} menit • CAT BKN`}</CardDescription>
+                    <CardTitle className="text-base flex items-center gap-2">{p.judul} {p.is_tryout_akbar && <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded">Akbar</span>}</CardTitle>
+                    <CardDescription>{p.deskripsi || `${p.jumlah_soal} soal • ${p.durasi_menit} menit • CAT BKN`}{p.is_tryout_akbar && p.akbar_start ? ` • Window: ${new Date(p.akbar_start).toLocaleString("id-ID")} WIB` : ""}</CardDescription>
                   </CardHeader>
                   <CardContent className="flex items-center justify-between">
                     <span className="text-xs text-zinc-500">{p.jumlah_soal} soal • {p.durasi_menit} menit</span>
