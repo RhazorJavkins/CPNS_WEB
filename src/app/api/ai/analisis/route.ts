@@ -21,15 +21,15 @@ export async function POST(req: NextRequest) {
   if (!attempt_id) return NextResponse.json({ error: "attempt_id required" }, { status: 400 });
 
   // cache: if already exists return it
-  const { data: cached } = await supabase.from("ai_reviews").select("*").eq("attempt_id", attempt_id).maybeSingle();
+  const { data: cached } = await supabase.from("ai_reviews").select("id, attempt_id, user_id, kelemahan, rencana_7_hari, motivasi, prediksi_lulus, raw_response, created_at").eq("attempt_id", attempt_id).maybeSingle();
   if (cached) return NextResponse.json({ cached: true, data: cached });
 
   // rate limit: max 5 per user per day (simple) — deprecated, now handled by kuota 1+1 max2 above
 
-  const { data: attempt } = await supabase.from("attempts").select("*").eq("id", attempt_id).single();
+  const { data: attempt } = await supabase.from("attempts").select("id, user_id, skor_twk, skor_tiu, skor_tkp, skor_total, status_kelulusan").eq("id", attempt_id).single();
   if (!attempt || attempt.user_id !== user.id) return NextResponse.json({ error: "Attempt not found" }, { status: 404 });
 
-  const { data: answers } = await supabase.from("attempt_answers").select("*, questions!inner(kategori, sub_materi, pertanyaan)").eq("attempt_id", attempt_id);
+  const { data: answers } = await supabase.from("attempt_answers").select("id, is_benar, skor_didapat, questions!inner(kategori, sub_materi, pertanyaan)").eq("attempt_id", attempt_id);
   if (!answers) return NextResponse.json({ error: "No answers" }, { status: 404 });
 
   const benarTwk = answers.filter(a => (a as any).questions.kategori === "TWK" && a.is_benar).length;

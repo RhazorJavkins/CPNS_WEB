@@ -12,14 +12,14 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  const { data: attempt } = await supabase.from("attempts").select("*, tryout_packages!inner(judul, is_tryout_akbar)").eq("id", id).single();
+  const { data: attempt } = await supabase.from("attempts").select("id, user_id, tryout_id, waktu_mulai, waktu_selesai, durasi_pengerjaan, skor_twk, skor_tiu, skor_tkp, skor_total, status_twk, status_tiu, status_tkp, status_kelulusan, tryout_packages!inner(judul, is_tryout_akbar)").eq("id", id).single();
   if (!attempt) notFound();
   if (attempt.user_id !== user.id) redirect("/dashboard");
   if (!attempt.waktu_selesai) redirect(`/tryout/${attempt.tryout_id}/kerjakan`);
 
   const isLulus = attempt.status_kelulusan === "LULUS SKD";
   const pct = (v: number, max: number) => Math.min(100, Math.round((v / max) * 100));
-  const { data: aiReview } = await supabase.from("ai_reviews").select("*").eq("attempt_id", id).maybeSingle();
+  const { data: aiReview } = await supabase.from("ai_reviews").select("id, attempt_id, user_id, kelemahan, rencana_7_hari, motivasi, prediksi_lulus, raw_response, created_at").eq("attempt_id", id).maybeSingle();
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <header className="sticky top-0 bg-white dark:bg-zinc-900 border-b">

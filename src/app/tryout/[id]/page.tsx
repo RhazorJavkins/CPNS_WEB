@@ -7,7 +7,7 @@ export default async function TryoutDetailPage({ params }: { params: Promise<{ i
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  const { data: pkg } = await supabase.from("tryout_packages").select("*").eq("id", id).single();
+  const { data: pkg } = await supabase.from("tryout_packages").select("id, judul, deskripsi, jumlah_soal, durasi_menit, is_active, is_tryout_akbar, akbar_start, akbar_end").eq("id", id).single();
   if (!pkg) notFound();
   const { count: qCount } = await supabase.from("questions").select("id", { count: "exact", head: true });
   // cek attempt belum selesai

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   if (!question_id) return NextResponse.json({ error: "question_id required" }, { status: 400 });
   const n = Math.min(Math.max(Number(jumlah) || 5, 1), 5);
 
-  const { data: q } = await supabase.from("questions").select("*").eq("id", question_id).single();
+  const { data: q } = await supabase.from("questions").select("id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e, kunci_jawaban, pembahasan, skor_tkp").eq("id", question_id).single();
   if (!q) return NextResponse.json({ error: "Soal tidak ditemukan" }, { status: 404 });
 
   // legacy global rate limit removed — now handled by kuota 1+1 max2 above (via getKuota)

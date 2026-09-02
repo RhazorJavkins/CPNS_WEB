@@ -30,9 +30,9 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
 
   // Fetch tryout_packages
-  const { data: packages } = await supabase.from("tryout_packages").select("*").eq("is_active", true).order("created_at");
+  const { data: packages } = await supabase.from("tryout_packages").select("id, judul, deskripsi, jumlah_soal, durasi_menit, is_active, is_tryout_akbar, akbar_start, akbar_end, created_at").eq("is_active", true).order("created_at");
   // Fetch attempts for user (all for chart, limit 10 for table)
-  const { data: attempts } = await supabase.from("attempts").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
+  const { data: attempts } = await supabase.from("attempts").select("id, tryout_id, waktu_mulai, waktu_selesai, durasi_pengerjaan, skor_twk, skor_tiu, skor_tkp, skor_total, status_twk, status_tiu, status_tkp, status_kelulusan, created_at, is_tryout_akbar").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
   const { data: attemptsAll } = await supabase.from("attempts").select("id, skor_twk, skor_tiu, skor_tkp, skor_total, status_kelulusan, created_at").eq("user_id", user.id).order("created_at", { ascending: true });
   // Count questions
   const { count: qCount } = await supabase.from("questions").select("id", { count: "exact", head: true });

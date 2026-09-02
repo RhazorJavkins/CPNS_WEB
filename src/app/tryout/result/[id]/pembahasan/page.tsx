@@ -10,11 +10,11 @@ export default async function PembahasanPage({ params, searchParams }: { params:
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  const { data: attempt } = await supabase.from("attempts").select("*").eq("id", id).single();
+  const { data: attempt } = await supabase.from("attempts").select("id, user_id, tryout_id, waktu_mulai, waktu_selesai, durasi_pengerjaan, skor_twk, skor_tiu, skor_tkp, skor_total, status_twk, status_tiu, status_tkp, status_kelulusan").eq("id", id).single();
   if (!attempt) notFound();
   if (attempt.user_id !== user.id) redirect("/dashboard");
 
-  let query = supabase.from("attempt_answers").select("*, questions!inner(*)").eq("attempt_id", id).order("urutan", { ascending: true, nullsFirst: true }).order("created_at", { ascending: true });
+  let query = supabase.from("attempt_answers").select("id, attempt_id, question_id, urutan, jawaban_user, is_ragu, skor_didapat, is_benar, questions!inner(id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e, kunci_jawaban, pembahasan, skor_tkp)").eq("attempt_id", id).order("urutan", { ascending: true, nullsFirst: true });
   const { data: rows } = await query;
   if (!rows) notFound();
 

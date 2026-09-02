@@ -43,7 +43,7 @@ export default function LatihanRunner({ mode, n, ids }: { mode: string; n: numbe
       let qs: Q[] = [];
       const limitFetch = 80;
       if (mode === "custom" && ids && ids.length > 0) {
-        const { data, error } = await supabase.from("questions").select("*").in("id", ids);
+        const { data, error } = await supabase.from("questions").select("id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e, kunci_jawaban, pembahasan, skor_tkp").in("id", ids);
         if (error) throw error;
         qs = (data as Q[]) || [];
         // preserve order sesuai ids
@@ -56,16 +56,16 @@ export default function LatihanRunner({ mode, n, ids }: { mode: string; n: numbe
         if (salahIds.length === 0) throw new Error("Belum ada soal salah — kerjakan tryout/latihan dulu biar ada data salah.");
         const unique = [...new Set(salahIds)] as string[];
         const pickIds = unique.sort(() => 0.5 - Math.random()).slice(0, n);
-        const { data, error } = await supabase.from("questions").select("*").in("id", pickIds);
+        const { data, error } = await supabase.from("questions").select("id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e, kunci_jawaban, pembahasan, skor_tkp").in("id", pickIds);
         if (error) throw error;
         qs = (data as Q[]).sort(() => 0.5 - Math.random());
       } else if (["twk", "tiu", "tkp"].includes(mode)) {
         const kat = mode.toUpperCase();
-        const { data, error } = await supabase.from("questions").select("*").eq("kategori", kat).limit(limitFetch);
+        const { data, error } = await supabase.from("questions").select("id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e, kunci_jawaban, pembahasan, skor_tkp").eq("kategori", kat).limit(limitFetch);
         if (error) throw error;
         qs = ((data as Q[]) || []).sort(() => 0.5 - Math.random()).slice(0, n);
       } else {
-        const { data, error } = await supabase.from("questions").select("*").limit(limitFetch);
+        const { data, error } = await supabase.from("questions").select("id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e, kunci_jawaban, pembahasan, skor_tkp").limit(limitFetch);
         if (error) throw error;
         qs = ((data as Q[]) || []).sort(() => 0.5 - Math.random()).slice(0, n);
       }

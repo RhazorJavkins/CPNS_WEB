@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   const { question_id, pesan_user } = await req.json();
   if (!question_id || !pesan_user?.trim()) return NextResponse.json({ error: "question_id & pesan_user required" }, { status: 400 });
 
-  const { data: q } = await supabase.from("questions").select("*").eq("id", question_id).single();
+  const { data: q } = await supabase.from("questions").select("id, kategori, sub_materi, topik, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e, kunci_jawaban, pembahasan, skor_tkp").eq("id", question_id).single();
   if (!q) return NextResponse.json({ error: "Soal tidak ditemukan" }, { status: 404 });
 
   // rate limit simple: 20/hari — deprecated kuota handled above

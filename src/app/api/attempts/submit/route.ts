@@ -9,11 +9,11 @@ export async function POST(req: NextRequest) {
   const { attempt_id } = await req.json();
   if (!attempt_id) return NextResponse.json({ error: "attempt_id required" }, { status: 400 });
 
-  const { data: att } = await supabase.from("attempts").select("*").eq("id", attempt_id).single();
+  const { data: att } = await supabase.from("attempts").select("id, user_id, tryout_id, waktu_mulai, waktu_selesai, durasi_pengerjaan").eq("id", attempt_id).single();
   if (!att || att.user_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   if (att.waktu_selesai) return NextResponse.json({ ok: true, already: true, attempt: att });
 
-  const { data: answers } = await supabase.from("attempt_answers").select("*, questions!inner(kategori,kunci_jawaban,skor_tkp)").eq("attempt_id", attempt_id);
+  const { data: answers } = await supabase.from("attempt_answers").select("id, question_id, jawaban_user, questions!inner(kategori, kunci_jawaban, skor_tkp)").eq("attempt_id", attempt_id);
   if (!answers) return NextResponse.json({ error: "No answers" }, { status: 400 });
 
   const mapped = answers.map((a: any) => ({
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     status_tiu: s.status_tiu,
     status_tkp: s.status_tkp,
     status_kelulusan: s.status_kelulusan,
-  }).eq("id", attempt_id).select("*").single();
+  }).eq("id", attempt_id).select("id, user_id, tryout_id, waktu_mulai, waktu_selesai, durasi_pengerjaan, skor_twk, skor_tiu, skor_tkp, skor_total, status_twk, status_tiu, status_tkp, status_kelulusan").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // 16.4 XP +50 untuk tryout selesai
