@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+type RunnerQuestion = {
+  id: string;
+  kategori: string;
+  formasi?: string | null;
+  sub_materi: string | null;
+  topik: string | null;
+  level: string | null;
+  pertanyaan: string;
+  opsi_a: string;
+  opsi_b: string;
+  opsi_c: string;
+  opsi_d: string;
+  opsi_e: string;
+};
+
+const RUNNER_QUESTION_FIELDS = "id, kategori, formasi, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e";
+const RUNNER_ANSWER_FIELDS = "id, attempt_id, question_id, urutan, jawaban_user, is_ragu, questions!inner(id, kategori, formasi, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e)";
+
 function shuffle<T>(a: T[]): T[] { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]} return b; }
 
 export async function POST(req: NextRequest) {
@@ -25,23 +43,38 @@ export async function POST(req: NextRequest) {
   // cek ongoing
   const { data: ongoing } = await supabase.from("attempts").select("id").eq("user_id", user.id).eq("tryout_id", tryout_id).is("waktu_selesai", null).order("waktu_mulai", { ascending: false }).limit(1).maybeSingle();
   if (ongoing) {
-    const { data: answers } = await supabase.from("attempt_answers").select("id, attempt_id, question_id, urutan, jawaban_user, is_ragu, questions!inner(id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e)").eq("attempt_id", ongoing.id).order("urutan", { ascending: true });
+    const { data: answers } = await supabase.from("attempt_answers").select(RUNNER_ANSWER_FIELDS).eq("attempt_id", ongoing.id).order("urutan", { ascending: true });
     return NextResponse.json({ attempt_id: ongoing.id, existing: true, answers });
   }
 
-  // jumlah per kategori
-  let need: Record<string, number>;
-  if (pkg.jumlah_soal === 30) need = { TWK: 10, TIU: 10, TKP: 10 };
-  else need = { TWK: 30, TIU: 35, TKP: 45 }; // default 110
+  const isSkbPackage = (pkg.judul || "").toUpperCase().includes("SKB");
+  let orderedQuestions: RunnerQuestion[] = [];
 
-  // fetch & shuffle per kategori
-  const allQ: any[] = [];
-  for (const kat of ["TWK","TIU","TKP"] as const) {
-    const { data } = await supabase.from("questions").select("id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e").eq("kategori", kat).limit(200);
-    const sh = shuffle(data || []);
-    allQ.push(...sh.slice(0, (need as any)[kat]));
+  if (isSkbPackage) {
+    const { data: packageRows, error: packageError } = await supabase
+      .from("tryout_questions")
+      .select(`question_id, urutan, questions!inner(${RUNNER_QUESTION_FIELDS})`)
+      .eq("tryout_id", pkg.id)
+      .order("urutan", { ascending: true })
+      .limit(pkg.jumlah_soal || 100);
+    if (packageError) return NextResponse.json({ error: packageError.message }, { status: 500 });
+    orderedQuestions = (packageRows || []).map((row: any) => row.questions).filter(Boolean) as RunnerQuestion[];
+  } else {
+    const need = pkg.jumlah_soal === 30 ? { TWK: 10, TIU: 10, TKP: 10 } : { TWK: 30, TIU: 35, TKP: 45 };
+    const allQ: RunnerQuestion[] = [];
+    for (const kat of ["TWK", "TIU", "TKP"] as const) {
+      const { data, error } = await supabase.from("questions").select(RUNNER_QUESTION_FIELDS).eq("kategori", kat).limit(200);
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      allQ.push(...shuffle((data || []) as RunnerQuestion[]).slice(0, need[kat]));
+    }
+    // Keep section order: TWK 1-30, TIU 31-65, TKP 66-110.
+    orderedQuestions = allQ;
   }
-  const shuffled = shuffle(allQ);
+
+  const requiredQuestions = pkg.jumlah_soal || (isSkbPackage ? 100 : 110);
+  if (orderedQuestions.length < requiredQuestions) {
+    return NextResponse.json({ error: `Soal paket tidak cukup: tersedia ${orderedQuestions.length}, membutuhkan ${requiredQuestions}` }, { status: 409 });
+  }
 
   // buat attempt
   const isAkbarPkg = (pkg as any).is_tryout_akbar === true;
@@ -54,7 +87,7 @@ export async function POST(req: NextRequest) {
   if (err1 || !attempt) return NextResponse.json({ error: err1?.message || "Gagal buat attempt" }, { status: 500 });
 
   // buat attempt_answers
-  const rows = shuffled.map((q, idx) => ({
+  const rows = orderedQuestions.map((q, idx) => ({
     attempt_id: attempt.id,
     question_id: q.id,
     urutan: idx + 1,
@@ -64,6 +97,6 @@ export async function POST(req: NextRequest) {
   const { error: err2 } = await supabase.from("attempt_answers").insert(rows);
   if (err2) return NextResponse.json({ error: err2.message }, { status: 500 });
 
-  const { data: answers } = await supabase.from("attempt_answers").select("id, attempt_id, question_id, urutan, jawaban_user, is_ragu, questions!inner(id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e)").eq("attempt_id", attempt.id).order("urutan", { ascending: true });
+  const { data: answers } = await supabase.from("attempt_answers").select(RUNNER_ANSWER_FIELDS).eq("attempt_id", attempt.id).order("urutan", { ascending: true });
   return NextResponse.json({ attempt_id: attempt.id, existing: false, answers, durasi_menit: pkg.durasi_menit });
 }
