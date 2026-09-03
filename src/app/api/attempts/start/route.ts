@@ -18,7 +18,7 @@ type RunnerQuestion = {
 
 const RUNNER_QUESTION_FIELDS = "id, kategori, formasi, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e";
 const RUNNER_ANSWER_FIELDS = "id, attempt_id, question_id, urutan, jawaban_user, is_ragu, questions!inner(id, kategori, formasi, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e)";
-const ATTEMPT_TIMER_FIELDS = "id, waktu_mulai, waktu_selesai";
+const ATTEMPT_TIMER_FIELDS = "id, waktu_mulai, waktu_selesai, durasi_menit, deadline_at";
 
 function getDeadlineAt(waktuMulai: string, durasiMenit: number) {
   return new Date(new Date(waktuMulai).getTime() + durasiMenit * 60_000).toISOString();
