@@ -18,7 +18,7 @@ type RunnerQuestion = {
 
 const RUNNER_QUESTION_FIELDS = "id, kategori, formasi, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e";
 const RUNNER_ANSWER_FIELDS = "id, attempt_id, question_id, urutan, jawaban_user, is_ragu, questions!inner(id, kategori, formasi, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e)";
-
+const ATTEMPT_TIMER_FIELDS = "id, waktu_mulai, waktu_selesai";
 function shuffle<T>(a: T[]): T[] { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]} return b; }
 
 export async function POST(req: NextRequest) {
@@ -41,10 +41,11 @@ export async function POST(req: NextRequest) {
   }
 
   // cek ongoing
-  const { data: ongoing } = await supabase.from("attempts").select("id").eq("user_id", user.id).eq("tryout_id", tryout_id).is("waktu_selesai", null).order("waktu_mulai", { ascending: false }).limit(1).maybeSingle();
+  const { data: ongoing } = await supabase.from("attempts").select("id, waktu_mulai, waktu_selesai, durasi_menit, deadline_at").eq("user_id", user.id).eq("tryout_id", tryout_id).is("waktu_selesai", null).order("waktu_mulai", { ascending: false }).limit(1).maybeSingle();
   if (ongoing) {
+    const deadlineAt = ongoing.deadline_at || new Date(new Date(ongoing.waktu_mulai).getTime() + (ongoing.durasi_menit || pkg.durasi_menit || 100) * 60_000).toISOString();
     const { data: answers } = await supabase.from("attempt_answers").select(RUNNER_ANSWER_FIELDS).eq("attempt_id", ongoing.id).order("urutan", { ascending: true });
-    return NextResponse.json({ attempt_id: ongoing.id, existing: true, answers });
+    return NextResponse.json({ attempt_id: ongoing.id, existing: true, waktu_mulai: ongoing.waktu_mulai, durasi_menit: ongoing.durasi_menit || pkg.durasi_menit || 100, deadline_at: deadlineAt, answers });
   }
 
   const isSkbPackage = (pkg.judul || "").toUpperCase().includes("SKB");
@@ -78,10 +79,14 @@ export async function POST(req: NextRequest) {
 
   // buat attempt
   const isAkbarPkg = (pkg as any).is_tryout_akbar === true;
+  const waktuMulai = new Date();
+  const durasiMenit = pkg.durasi_menit || 100;
   const { data: attempt, error: err1 } = await supabase.from("attempts").insert({
     user_id: user.id,
     tryout_id: pkg.id,
-    waktu_mulai: new Date().toISOString(),
+    waktu_mulai: waktuMulai.toISOString(),
+    durasi_menit: durasiMenit,
+    deadline_at: new Date(waktuMulai.getTime() + durasiMenit * 60_000).toISOString(),
     is_tryout_akbar: isAkbarPkg,
   }).select("id").single();
   if (err1 || !attempt) return NextResponse.json({ error: err1?.message || "Gagal buat attempt" }, { status: 500 });
@@ -98,5 +103,6 @@ export async function POST(req: NextRequest) {
   if (err2) return NextResponse.json({ error: err2.message }, { status: 500 });
 
   const { data: answers } = await supabase.from("attempt_answers").select(RUNNER_ANSWER_FIELDS).eq("attempt_id", attempt.id).order("urutan", { ascending: true });
-  return NextResponse.json({ attempt_id: attempt.id, existing: false, answers, durasi_menit: pkg.durasi_menit });
+  const deadlineAt = new Date(waktuMulai.getTime() + durasiMenit * 60_000).toISOString();
+  return NextResponse.json({ attempt_id: attempt.id, existing: false, waktu_mulai: waktuMulai.toISOString(), durasi_menit: durasiMenit, deadline_at: deadlineAt, answers });
 }

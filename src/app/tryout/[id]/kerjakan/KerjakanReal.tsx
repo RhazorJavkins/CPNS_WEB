@@ -17,6 +17,7 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
   const [answers, setAnswers] = useState<Ans[]>([]);
   const [cur, setCur] = useState(0);
   const [durasi, setDurasi] = useState(6000);
+  const [deadlineAt, setDeadlineAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -36,8 +37,7 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
         setAttemptId(j.attempt_id);
         setAnswers(j.answers || []);
         if (j.durasi_menit) setDurasi(j.durasi_menit * 60);
-        else setDurasi(6000);
-        // hitung sisa waktu dari waktu_mulai jika existing — untuk Batch 2 simple pakai durasi penuh
+        setDeadlineAt(j.deadline_at || null);
       } catch (e: any) { setErr(e.message); } finally { setLoading(false); }
     }
     start();
@@ -123,7 +123,7 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
         <button onClick={() => setShowGrid(!showGrid)} className="lg:hidden text-xs border rounded px-2 py-1 bg-white">☰ Soal</button>
         <div className="flex-1 flex items-center justify-center gap-2 min-w-0">
           <span className="text-xs text-zinc-500 hidden md:inline">Sisa Waktu</span>
-          <Timer seconds={durasi} onExpire={handleExpire} />
+          <Timer deadlineAt={deadlineAt} fallbackSeconds={durasi} onExpire={handleExpire} />
           {saving && <span className="text-xs text-zinc-400 hidden sm:inline">Menyimpan...</span>}
         </div>
         <span className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded whitespace-nowrap">Soal {cur + 1}/{answers.length}</span>
