@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   const { attempt_id } = await req.json();
   if (!attempt_id) return NextResponse.json({ error: "attempt_id required" }, { status: 400 });
 
-  const { data: att } = await supabase.from("attempts").select("id, user_id, tryout_id, waktu_mulai, waktu_selesai, durasi_pengerjaan, durasi_menit, deadline_at").eq("id", attempt_id).single();
+  const { data: att } = await supabase.from("attempts").select("id, user_id, tryout_id, waktu_mulai, waktu_selesai, durasi_pengerjaan, durasi_menit, deadline_at, tryout_packages!inner(durasi_menit)").eq("id", attempt_id).single();
   if (!att || att.user_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   if (att.waktu_selesai) return NextResponse.json({ ok: true, already: true, attempt: att });
 
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
   const nowMs = Date.now();
   const mulai = new Date(att.waktu_mulai).getTime();
-  const durasiMenit = att.durasi_menit || 100;
+  const durasiMenit = att.durasi_menit || (att as any).tryout_packages?.durasi_menit || 100;
   const deadlineMs = att.deadline_at ? new Date(att.deadline_at).getTime() : mulai + durasiMenit * 60_000;
   const now = new Date(Math.min(nowMs, deadlineMs)).toISOString();
   const durasi = Math.min(Math.floor((nowMs - mulai) / 1000), durasiMenit * 60);
