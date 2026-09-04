@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import LandingAkbarWrapper from "@/components/akbar/LandingAkbarWrapper";
 import HeroSection from "@/components/landing/HeroSection";
+import TrustMetrics from "@/components/landing/TrustMetrics";
 
 function FAQSchema() {
   const faq = {
@@ -35,6 +36,7 @@ export default function Home() {
 
       {/* Hero */}
       <HeroSection />
+      <TrustMetrics />
       <LandingAkbarWrapper />
       <section className="flex-1 bg-white dark:bg-zinc-900">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
