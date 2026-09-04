@@ -9,9 +9,5 @@ export default function LandingAkbarWrapper() {
     fetch("/api/akbar/next").then((r) => r.json()).then((j) => { if (j.akbar) { setAkbar(j.akbar); setMode(j.mode); } }).catch(() => {});
   }, []);
   if (!akbar || !akbar.akbar_start || !akbar.akbar_end) return null;
-  return (
-    <div className="max-w-6xl mx-auto px-4 pt-6">
-      <AkbarCountdown start={akbar.akbar_start} end={akbar.akbar_end} tryoutId={akbar.id} judul={akbar.judul} />
-    </div>
-  );
+  return <AkbarCountdown start={akbar.akbar_start} end={akbar.akbar_end} tryoutId={akbar.id} judul={akbar.judul} />;
 }

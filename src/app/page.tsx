@@ -39,17 +39,17 @@ export default function Home() {
       <HeroSection />
       <TrustMetrics />
       {/* Tryout Akbar — dedicated section Opsi B */}
-      <section className="bg-[#0a1930] dark:bg-zinc-900 border-y">
+      <section className="bg-zinc-50 dark:bg-zinc-900 border-y">
         <div className="max-w-6xl mx-auto px-4 py-8 md:py-10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
             <div>
-              <p className="text-xs font-semibold tracking-widest uppercase text-blue-300">Event Mingguan</p>
-              <h2 className="text-lg md:text-xl font-bold">Tryout Akbar</h2>
+              <p className="text-xs font-semibold tracking-widest uppercase text-blue-600 dark:text-blue-400">Event Mingguan</p>
+              <h2 className="text-lg md:text-xl font-bold text-zinc-900 dark:text-white">Tryout Akbar</h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">110 soal • 100 menit • Window Minggu 19.00–21.00 WIB</p>
             </div>
-            <Link href="/leaderboard?akbar=true" className="text-xs text-blue-200 hover:text-white underline underline-offset-4">Lihat Leaderboard Akbar →</Link>
+            <Link href="/leaderboard?akbar=true" className="text-xs border bg-white dark:bg-zinc-800 hover:bg-zinc-50 rounded-full px-3 py-1.5">Lihat Leaderboard Akbar →</Link>
           </div>
           <LandingAkbarWrapper />
-          <p className="text-xs text-blue-200/60 mt-3">110 soal • 100 menit • Window Minggu 19.00–21.00 WIB • Leaderboard freeze setelah selesai</p>
         </div>
       </section>
       <section className="flex-1 bg-white dark:bg-zinc-900">
