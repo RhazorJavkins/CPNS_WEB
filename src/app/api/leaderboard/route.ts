@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+export const revalidate = 15;
+
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { searchParams } = new URL(req.url);
@@ -88,5 +90,5 @@ export async function GET(req: NextRequest) {
     }
   } catch {}
 
-  return NextResponse.json({ filter, periode, count: enriched.length, myRank, data: enriched });
+  return NextResponse.json({ filter, periode, count: enriched.length, myRank, data: enriched }, { headers: { "Cache-Control": "public, s-maxage=15, stale-while-revalidate=30" } });
 }

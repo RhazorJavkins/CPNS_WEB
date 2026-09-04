@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit, getClientKey, rateLimitHeaders } from "@/lib/rate-limit";
 
 type RunnerQuestion = {
   id: string;
@@ -29,6 +30,11 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // rate limit: 10 start per menit per user (anti burst 100 bersamaan)
+  {
+    const rl = rateLimit(getClientKey(req, user.id) + ":start", 10, 60_000);
+    if (!rl.allowed) return NextResponse.json({ error: "Terlalu banyak permintaan, coba lagi sebentar." }, { status: 429, headers: { ...rateLimitHeaders(rl.remaining, rl.resetAt, 10), "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
+  }
   const { tryout_id } = await req.json();
   if (!tryout_id) return NextResponse.json({ error: "tryout_id required" }, { status: 400 });
 

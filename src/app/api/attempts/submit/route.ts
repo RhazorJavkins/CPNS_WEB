@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit, getClientKey, rateLimitHeaders } from "@/lib/rate-limit";
 
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  {
+    const rl = rateLimit(getClientKey(req, user.id) + ":submit", 10, 60_000);
+    if (!rl.allowed) return NextResponse.json({ error: "Terlalu banyak submit, coba lagi sebentar." }, { status: 429, headers: { ...rateLimitHeaders(rl.remaining, rl.resetAt, 10), "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
+  }
   const { attempt_id } = await req.json();
   if (!attempt_id) return NextResponse.json({ error: "attempt_id required" }, { status: 400 });
 
