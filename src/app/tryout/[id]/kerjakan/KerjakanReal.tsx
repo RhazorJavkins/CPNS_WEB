@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Timer } from "@/components/tryout/Timer";
 import { NumberGrid } from "@/components/tryout/NumberGrid";
 import { QuestionCard } from "@/components/tryout/QuestionCard";
@@ -24,6 +24,9 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
+  const dirtyRef = useRef<Map<string, { jawaban_user: string | null; is_ragu: boolean }>>(new Map());
+  const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flushingRef = useRef(false);
 
   // start attempt
   useEffect(() => {
@@ -46,13 +49,46 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
 
   const upsert = useCallback(async (question_id: string, jawaban_user: string | null, is_ragu: boolean) => {
     if (!attemptId) return;
-    setSaving(true);
-    try {
-      await fetch("/api/attempt_answers/upsert", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ attempt_id: attemptId, question_id, jawaban_user, is_ragu }) });
-    } finally { setSaving(false); }
+    dirtyRef.current.set(question_id, { jawaban_user, is_ragu });
+    if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+    flushTimerRef.current = setTimeout(() => { void flushBulk(); }, 1200);
   }, [attemptId]);
 
-  // auto-save tiap ganti jawaban sudah via upsert langsung; tidak perlu poll 10 detik untuk Batch 2 (langsung save)
+  const flushBulk = useCallback(async () => {
+    if (!attemptId || dirtyRef.current.size === 0 || flushingRef.current) return;
+    const payload = Array.from(dirtyRef.current.entries()).map(([question_id, v]) => ({ question_id, jawaban_user: v.jawaban_user, is_ragu: v.is_ragu }));
+    dirtyRef.current.clear();
+    if (flushTimerRef.current) { clearTimeout(flushTimerRef.current); flushTimerRef.current = null; }
+    flushingRef.current = true;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/attempt_answers/bulk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ attempt_id: attemptId, answers: payload }) });
+      if (!res.ok) {
+        // restore on failure
+        for (const p of payload) dirtyRef.current.set(p.question_id, { jawaban_user: p.jawaban_user, is_ragu: !!p.is_ragu });
+      }
+    } finally {
+      flushingRef.current = false;
+      setSaving(false);
+      if (dirtyRef.current.size > 0) {
+        flushTimerRef.current = setTimeout(() => { void flushBulk(); }, 800);
+      }
+    }
+  }, [attemptId]);
+
+  // flush on visibility / beforeunload and before submit/expiry
+  useEffect(() => {
+    const onVis = () => { if (document.visibilityState === "hidden") void flushBulk(); };
+    const onBeforeUnload = () => { if (dirtyRef.current.size > 0 && attemptId) { const p = Array.from(dirtyRef.current.entries()).map(([question_id, v]) => ({ question_id, jawaban_user: v.jawaban_user, is_ragu: v.is_ragu })); navigator.sendBeacon?.("/api/attempt_answers/bulk", JSON.stringify({ attempt_id: attemptId, answers: p })); } };
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => { document.removeEventListener("visibilitychange", onVis); window.removeEventListener("beforeunload", onBeforeUnload); };
+  }, [attemptId, flushBulk]);
+
+  // ensure pending flush on unmount
+  useEffect(() => { return () => { if (flushTimerRef.current) clearTimeout(flushTimerRef.current); }; }, []);
+
+  // auto-save bulk: flush tiap 1.2s, saat tab hidden, dan sebelum submit
 
   const handleSelect = (key: string) => {
     const a = answers[cur];
@@ -83,6 +119,9 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
   const handleSubmit = async () => {
     if (!attemptId) return;
     setSubmitting(true);
+    await flushBulk();
+    // retry flush until dirty empty (max 2x)
+    if (dirtyRef.current.size > 0) await flushBulk();
     const res = await fetch("/api/attempts/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ attempt_id: attemptId }) });
     const j = await res.json();
     if (!res.ok) { alert(j.error); setSubmitting(false); return; }
@@ -91,6 +130,7 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
 
   const handleExpire = async () => {
     if (!attemptId) return;
+    await flushBulk();
     await fetch("/api/attempts/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ attempt_id: attemptId }) });
     alert("Waktu habis — otomatis submit!");
     router.push(`/tryout/result/${attemptId}`);
@@ -178,7 +218,7 @@ export default function KerjakanRealPage({ tryoutId }: { tryoutId: string }) {
             <p className="text-xs font-medium">Passing Grade</p>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">TWK 65 • TIU 80 • TKP 166</p>
           </div>
-          <p className="text-xs text-zinc-400">Attempt: {attemptId?.slice(0, 8)}... • Auto-save langsung tiap klik</p>
+          <p className="text-xs text-zinc-400">Attempt: {attemptId?.slice(0, 8)}... • Auto-save bulk tiap 1.2s + flush sebelum submit</p>
         </div>
       </div>
       <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
