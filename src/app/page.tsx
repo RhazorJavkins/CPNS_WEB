@@ -28,6 +28,7 @@ export default function Home() {
             <span>Web</span>
           </Link>
           <nav className="flex items-center gap-2">
+            <Link href="/leaderboard" className="hidden sm:inline-flex text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-2 py-1">Leaderboard</Link>
             <Link href="/login" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">Masuk</Link>
             <Link href="/register" className="inline-flex items-center justify-center rounded-lg bg-blue-600 text-white px-4 py-1.5 text-sm font-medium hover:bg-blue-700">Daftar Gratis</Link>
           </nav>
@@ -37,7 +38,20 @@ export default function Home() {
       {/* Hero */}
       <HeroSection />
       <TrustMetrics />
-      <LandingAkbarWrapper />
+      {/* Tryout Akbar — dedicated section Opsi B */}
+      <section className="bg-[#0a1930] dark:bg-zinc-900 border-y">
+        <div className="max-w-6xl mx-auto px-4 py-8 md:py-10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 text-white">
+            <div>
+              <p className="text-xs font-semibold tracking-widest uppercase text-blue-300">Event Mingguan</p>
+              <h2 className="text-lg md:text-xl font-bold">Tryout Akbar</h2>
+            </div>
+            <Link href="/leaderboard?akbar=true" className="text-xs text-blue-200 hover:text-white underline underline-offset-4">Lihat Leaderboard Akbar →</Link>
+          </div>
+          <LandingAkbarWrapper />
+          <p className="text-xs text-blue-200/60 mt-3">110 soal • 100 menit • Window Minggu 19.00–21.00 WIB • Leaderboard freeze setelah selesai</p>
+        </div>
+      </section>
       <section className="flex-1 bg-white dark:bg-zinc-900">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
           <div className="grid gap-4 md:grid-cols-3">
