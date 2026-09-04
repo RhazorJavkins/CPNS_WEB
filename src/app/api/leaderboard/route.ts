@@ -71,18 +71,18 @@ export async function GET(req: NextRequest) {
     };
   }).sort((a, b) => (b.skor_total || 0) - (a.skor_total || 0)).map((r, i) => ({ ...r, rank: i + 1 })).slice(0, 100);
 
-  // posisi kamu
+  // posisi kamu — hanya jika ada auth, biar anonymous bisa HIT cache
   let myRank: number | null = null;
+  let isPersonal = false;
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
+      isPersonal = true;
       const idx = enriched.findIndex((r) => r.user_id === user.id);
       if (idx >= 0) myRank = idx + 1;
       else {
-        // cek apakah user ada di luar top 100
         const me = bestByUser.get(user.id);
         if (me) {
-          // hitung rank sebenarnya dengan membandingkan skor_total dengan enriched
           const higher = enriched.filter((r) => (r.skor_total || 0) > (me.skor_total || 0)).length;
           myRank = higher + 1;
         }
@@ -90,5 +90,8 @@ export async function GET(req: NextRequest) {
     }
   } catch {}
 
-  return NextResponse.json({ filter, periode, count: enriched.length, myRank, data: enriched }, { headers: { "Cache-Control": "public, s-maxage=15, stale-while-revalidate=30" } });
+  const cacheHeaders = isPersonal
+    ? { "Cache-Control": "private, no-store" }
+    : { "Cache-Control": "public, s-maxage=15, stale-while-revalidate=30" };
+  return NextResponse.json({ filter, periode, count: enriched.length, myRank, data: enriched }, { headers: cacheHeaders });
 }
