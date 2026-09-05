@@ -5,6 +5,7 @@ import HeroSection from "@/components/landing/HeroSection";
 import TrustMetrics from "@/components/landing/TrustMetrics";
 import ProductWalkthrough from "@/components/landing/ProductWalkthrough";
 import FeatureShowcase from "@/components/landing/FeatureShowcase";
+import SkbSection from "@/components/landing/SkbSection";
 
 function FAQSchema() {
   const faq = {
@@ -56,6 +57,7 @@ export default function Home() {
       </section>
       <ProductWalkthrough />
       <FeatureShowcase />
+      <SkbSection />
       <section className="flex-1 bg-white dark:bg-zinc-900">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
           <div className="grid gap-4 md:grid-cols-3">
