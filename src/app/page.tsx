@@ -6,6 +6,7 @@ import TrustMetrics from "@/components/landing/TrustMetrics";
 import ProductWalkthrough from "@/components/landing/ProductWalkthrough";
 import FeatureShowcase from "@/components/landing/FeatureShowcase";
 import SkbSection from "@/components/landing/SkbSection";
+import ResultPreview from "@/components/landing/ResultPreview";
 
 function FAQSchema() {
   const faq = {
@@ -58,6 +59,7 @@ export default function Home() {
       <ProductWalkthrough />
       <FeatureShowcase />
       <SkbSection />
+      <ResultPreview />
       <section className="flex-1 bg-white dark:bg-zinc-900">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
           <div className="grid gap-4 md:grid-cols-3">
