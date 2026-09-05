@@ -29,10 +29,20 @@ export async function GET(req: NextRequest) {
   }
   if (action==="questions") {
     const page = parseInt(url.searchParams.get("page")||"1");
-    const limit = 20;
+    const limit = Math.min(50, parseInt(url.searchParams.get("limit")||"20"));
     const from = (page-1)*limit;
-    const { data, count } = await supabase.from("questions").select("id, kategori, sub_materi, pertanyaan",{count:"exact"}).order("created_at",{ascending:false}).range(from, from+limit-1);
-    return NextResponse.json({ data, count, page });
+    const kategori = url.searchParams.get("kategori");
+    const level = url.searchParams.get("level");
+    const sub = url.searchParams.get("sub_materi");
+    const q = url.searchParams.get("q");
+    let query = supabase.from("questions").select("id, kategori, sub_materi, topik, level, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, opsi_e, kunci_jawaban, pembahasan, skor_tkp, created_at",{count:"exact"});
+    if (kategori && kategori!=="all") query = query.eq("kategori", kategori);
+    if (level && level!=="all") query = query.eq("level", level);
+    if (sub) query = query.ilike("sub_materi", `%${sub}%`);
+    if (q) query = query.ilike("pertanyaan", `%${q}%`);
+    const { data, count, error } = await query.order("created_at",{ascending:false}).range(from, from+limit-1);
+    if (error) return NextResponse.json({ error: error.message}, { status:500});
+    return NextResponse.json({ data, count, page, limit });
   }
   if (action==="ai_log") {
     const { data } = await supabase.from("ai_reviews").select("id, attempt_id, created_at").order("created_at",{ascending:false}).limit(20);
