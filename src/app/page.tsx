@@ -1,13 +1,14 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import LandingAkbarWrapper from "@/components/akbar/LandingAkbarWrapper";
 import HeroSection from "@/components/landing/HeroSection";
 import TrustMetrics from "@/components/landing/TrustMetrics";
 import ProductWalkthrough from "@/components/landing/ProductWalkthrough";
-import FeatureShowcase from "@/components/landing/FeatureShowcase";
-import SkbSection from "@/components/landing/SkbSection";
-import ResultPreview from "@/components/landing/ResultPreview";
-import PricingFaq from "@/components/landing/PricingFaq";
-import TrustSection from "@/components/landing/TrustSection";
+const FeatureShowcase = dynamic(() => import("@/components/landing/FeatureShowcase"));
+const SkbSection = dynamic(() => import("@/components/landing/SkbSection"));
+const ResultPreview = dynamic(() => import("@/components/landing/ResultPreview"));
+const PricingFaq = dynamic(() => import("@/components/landing/PricingFaq"));
+const TrustSection = dynamic(() => import("@/components/landing/TrustSection"));
 
 function FAQSchema() {
   const faq = {
@@ -69,6 +70,19 @@ export default function Home() {
       <ResultPreview />
       <PricingFaq />
       <TrustSection />
+      {/* Final CTA break — warna gelap */}
+      <section className="bg-[#07152f] text-white border-t border-white/10">
+        <div className="max-w-6xl mx-auto px-4 py-10 md:py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h2 className="text-lg md:text-xl font-bold">Sudah siap uji kemampuanmu?</h2>
+            <p className="text-sm text-blue-100/70 mt-1">Mulai tryout gratis sekarang — 110 soal, 100 menit, skor langsung jadi.</p>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <Link href="/dashboard" className="inline-flex items-center justify-center rounded-xl bg-white text-[#07152f] px-6 py-2.5 text-sm font-bold min-h-11 hover:bg-blue-50">Mulai Tryout Gratis →</Link>
+            <Link href="#harga" className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-2.5 text-sm font-semibold min-h-11 hover:bg-white/10">Lihat Harga</Link>
+          </div>
+        </div>
+      </section>
       {/* Footer */}
       <FAQSchema />
       <footer className="bg-white dark:bg-zinc-900 border-t">
