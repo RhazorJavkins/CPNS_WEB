@@ -16,38 +16,38 @@ const faqs = [
 export default function PricingFaq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="bg-white dark:bg-zinc-950 border-t">
+    <section id="harga" className="bg-white dark:bg-zinc-950 border-t">
       <div className="max-w-6xl mx-auto px-4 py-12 md:py-16">
         {/* Pricing preview */}
         <div className="text-center max-w-2xl mx-auto">
           <p className="text-xs font-semibold tracking-widest uppercase text-blue-600">Paket</p>
           <h2 className="text-xl md:text-2xl font-bold tracking-tight mt-1">Mulai gratis, upgrade kalau butuh</h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">Harga sama dengan halaman /pricing — checkout masih sandbox (uji coba).</p>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">Harga sama dengan halaman /pricing — pembayaran uji coba, aktivasi manual via admin sementara.</p>
         </div>
         <div className="mt-8 grid gap-4 md:grid-cols-2 max-w-3xl mx-auto">
           <div className="rounded-2xl border bg-zinc-50 dark:bg-zinc-900 p-6">
             <h3 className="font-bold">Free</h3>
-            <p className="text-2xl font-black mt-1">Rp 0<span className="text-sm font-medium text-zinc-500">/bulan</span></p>
+            <p className="text-2xl font-black mt-1">Rp 0<span className="text-sm font-medium text-zinc-600">/bulan</span></p>
             <ul className="mt-4 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
               <li>• 3 tryout / hari</li>
               <li>• 9 latihan / hari</li>
               <li>• Pembahasan setelah iklan</li>
               <li>• Leaderboard</li>
             </ul>
-            <Link href="/tryout" className="mt-5 inline-flex w-full justify-center rounded-full border bg-white dark:bg-zinc-800 py-2 text-sm font-semibold">Mulai Gratis</Link>
+            <Link href="/dashboard" className="mt-5 inline-flex w-full justify-center rounded-full border bg-white dark:bg-zinc-800 py-2.5 text-sm font-semibold min-h-11">Mulai Gratis</Link>
           </div>
           <div className="rounded-2xl border-2 border-blue-600 bg-white dark:bg-zinc-900 p-6 relative">
             <span className="absolute -top-3 right-4 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-full">POPULER</span>
             <h3 className="font-bold">Premium</h3>
-            <p className="text-2xl font-black mt-1">Rp 49k<span className="text-sm font-medium text-zinc-500">/bulan</span></p>
+            <p className="text-2xl font-black mt-1">Rp 49k<span className="text-sm font-medium text-zinc-600">/bulan</span></p>
             <ul className="mt-4 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
               <li>• Unlimited tryout & latihan</li>
               <li>• Tanpa iklan</li>
               <li>• Analisis AI prioritas</li>
               <li>• Akses SKB penuh</li>
             </ul>
-            <Link href="/pricing" className="mt-5 inline-flex w-full justify-center rounded-full bg-blue-600 text-white py-2 text-sm font-semibold">Lihat Paket Premium →</Link>
-            <p className="text-[11px] text-zinc-400 mt-2 text-center">Checkout sandbox — belum tagih beneran</p>
+            <Link href="/pricing" className="mt-5 inline-flex w-full justify-center rounded-full bg-blue-600 text-white py-2.5 text-sm font-semibold min-h-11">Lihat Paket Premium →</Link>
+            <p className="text-[11px] text-zinc-500 mt-2 text-center">Pembayaran uji coba — hubungi admin untuk aktivasi</p>
           </div>
         </div>
 
@@ -57,8 +57,8 @@ export default function PricingFaq() {
           <div className="mt-6 divide-y border rounded-2xl bg-zinc-50 dark:bg-zinc-900">
             {faqs.map((f, i) => (
               <div key={f.q} className="px-4">
-                <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex justify-between items-center py-3 text-left text-sm font-medium">
-                  <span>{f.q}</span><span className="text-zinc-400 ml-3 shrink-0">{open === i ? "−" : "+"}</span>
+                <button aria-expanded={open === i} onClick={() => setOpen(open === i ? null : i)} className="w-full flex justify-between items-center py-3 text-left text-sm font-medium min-h-11">
+                  <span>{f.q}</span><span className="text-zinc-400 ml-3 shrink-0" aria-hidden="true">{open === i ? "−" : "+"}</span>
                 </button>
                 {open === i && <p className="pb-3 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{f.a}</p>}
               </div>

@@ -37,10 +37,11 @@ export default function Home() {
             <span className="bg-blue-600 text-white px-2 py-1 rounded text-sm">CPNS</span>
             <span>Web</span>
           </Link>
-          <nav className="flex items-center gap-2">
-            <Link href="/leaderboard" className="hidden sm:inline-flex text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-2 py-1">Leaderboard</Link>
-            <Link href="/login" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">Masuk</Link>
-            <Link href="/register" className="inline-flex items-center justify-center rounded-lg bg-blue-600 text-white px-4 py-1.5 text-sm font-medium hover:bg-blue-700">Daftar Gratis</Link>
+          <nav className="flex items-center gap-1 sm:gap-2">
+            <Link href="/leaderboard" className="hidden sm:inline-flex text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-2 py-2">Leaderboard</Link>
+            <Link href="#harga" className="hidden md:inline-flex text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-2 py-2">Harga</Link>
+            <Link href="/login" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 px-2 py-2">Masuk</Link>
+            <Link href="/register" className="inline-flex items-center justify-center rounded-lg bg-blue-600 text-white px-4 py-2.5 text-sm font-medium hover:bg-blue-700 min-h-11">Daftar Gratis</Link>
           </nav>
         </div>
       </header>
