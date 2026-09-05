@@ -14,7 +14,7 @@ export default function HeroSection() {
             <Link href="/dashboard" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-6 py-3 text-sm font-bold text-[#07152f] shadow-lg shadow-black/20 transition hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Mulai Tryout Gratis <span className="ml-2">→</span></Link>
             <Link href="/latihan" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Coba 10 Soal</Link>
           </div>
-          <p className="mt-4 text-xs text-blue-100/55">900+ soal · 110 soal simulasi · 100 menit · 3 formasi SKB</p>
+          <p className="mt-4 text-xs text-blue-100/55">Free 900 soal · Premium 3.000 soal · 110 soal simulasi · 100 menit</p>
         </div>
         <ProductPreview />
       </div>

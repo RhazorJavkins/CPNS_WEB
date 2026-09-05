@@ -1,7 +1,7 @@
 "use client";
 
 const metrics = [
-  { value: "900+", label: "soal", context: "Bank TWK • TIU • TKP", icon: "📚" },
+  { value: "900 → 3rb", label: "bank soal", context: "Free 900 • Premium 3.000 soal", icon: "📚" },
   { value: "110", label: "soal / simulasi", context: "SKD: TWK 30 • TIU 35 • TKP 45", icon: "📝" },
   { value: "100", label: "menit", context: "Timer CAT BKN — auto-submit", icon: "⏱️" },
   { value: "3", label: "formasi SKB", context: "Guru • Nakes • Teknis — 200 soal each", icon: "🎯" },

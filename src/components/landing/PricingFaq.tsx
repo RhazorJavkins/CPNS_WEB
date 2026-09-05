@@ -29,10 +29,10 @@ export default function PricingFaq() {
             <h3 className="font-bold">Free</h3>
             <p className="text-2xl font-black mt-1">Rp 0<span className="text-sm font-medium text-zinc-600">/bulan</span></p>
             <ul className="mt-4 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
+              <li>• 900 bank soal SKD+SKB</li>
               <li>• 3 tryout / hari</li>
               <li>• 9 latihan / hari</li>
               <li>• Pembahasan setelah iklan</li>
-              <li>• Leaderboard</li>
             </ul>
             <Link href="/dashboard" className="mt-5 inline-flex w-full justify-center rounded-full border bg-white dark:bg-zinc-800 py-2.5 text-sm font-semibold min-h-11">Mulai Gratis</Link>
           </div>
@@ -41,10 +41,10 @@ export default function PricingFaq() {
             <h3 className="font-bold">Premium</h3>
             <p className="text-2xl font-black mt-1">Rp 49k<span className="text-sm font-medium text-zinc-600">/bulan</span></p>
             <ul className="mt-4 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
+              <li>• 3.000 bank soal SKD+SKB</li>
               <li>• Unlimited tryout & latihan</li>
               <li>• Tanpa iklan</li>
               <li>• Analisis AI prioritas</li>
-              <li>• Akses SKB penuh</li>
             </ul>
             <Link href="/pricing" className="mt-5 inline-flex w-full justify-center rounded-full bg-blue-600 text-white py-2.5 text-sm font-semibold min-h-11">Lihat Paket Premium →</Link>
             <p className="text-[11px] text-zinc-500 mt-2 text-center">Pembayaran uji coba — hubungi admin untuk aktivasi</p>
