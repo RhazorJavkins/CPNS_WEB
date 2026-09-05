@@ -7,6 +7,7 @@ import ProductWalkthrough from "@/components/landing/ProductWalkthrough";
 import FeatureShowcase from "@/components/landing/FeatureShowcase";
 import SkbSection from "@/components/landing/SkbSection";
 import ResultPreview from "@/components/landing/ResultPreview";
+import PricingFaq from "@/components/landing/PricingFaq";
 
 function FAQSchema() {
   const faq = {
@@ -60,6 +61,7 @@ export default function Home() {
       <FeatureShowcase />
       <SkbSection />
       <ResultPreview />
+      <PricingFaq />
       <section className="flex-1 bg-white dark:bg-zinc-900">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
           <div className="grid gap-4 md:grid-cols-3">
