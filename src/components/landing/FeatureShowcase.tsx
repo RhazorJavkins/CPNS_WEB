@@ -8,7 +8,7 @@ export default function FeatureShowcase() {
         <div className="max-w-2xl">
           <p className="text-xs font-semibold tracking-widest uppercase text-blue-600">Fitur Utama</p>
           <h2 className="text-xl md:text-2xl font-bold tracking-tight mt-1">Semua yang kamu butuh untuk lulus — bukan cuma soal.</h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">Hierarchy: satu fitur utama besar, dua pendukung, strip tambahan — tanpa 3 kartu generik.</p>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">Simulasi CAT, pembahasan alasan, radar kelemahan, hingga AI Coach dalam satu alur.</p>
         </div>
 
         {/* Hierarchy row 1: CAT besar + Pembahasan */}

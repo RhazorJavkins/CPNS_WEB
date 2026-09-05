@@ -17,7 +17,7 @@ export default function SkbSection() {
             <h2 className="text-xl md:text-2xl font-bold tracking-tight mt-1">Siap lanjut ke tahap SKB?</h2>
             <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">600 soal SKB terbagi 3 formasi — lanjut setelah SKD, tanpa klaim mirip soal resmi.</p>
           </div>
-          <Link href="/tryout?kategori=skb" className="inline-flex items-center justify-center rounded-full bg-blue-600 text-white px-5 py-2 text-sm font-semibold shrink-0">Lihat Latihan SKB →</Link>
+          <Link href="/dashboard" className="inline-flex items-center justify-center rounded-full bg-blue-600 text-white px-5 py-2 text-sm font-semibold shrink-0">Lihat Latihan SKB →</Link>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import LandingAkbarWrapper from "@/components/akbar/LandingAkbarWrapper";
 import HeroSection from "@/components/landing/HeroSection";
 import TrustMetrics from "@/components/landing/TrustMetrics";
@@ -15,9 +14,14 @@ function FAQSchema() {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
-      { "@type": "Question", name: "Berapa passing grade SKD CPNS 2026?", acceptedAnswer: { "@type": "Answer", text: "TWK 65, TIU 80, TKP 166, total 311. SKB 40% bobot akhir." } },
+      { "@type": "Question", name: "Apakah CPNS Web gratis?", acceptedAnswer: { "@type": "Answer", text: "Gratis 3 tryout/hari dan 9 latihan/hari, tanpa kartu kredit." } },
+      { "@type": "Question", name: "Apakah perlu kartu kredit?", acceptedAnswer: { "@type": "Answer", text: "Tidak. Daftar pakai email saja." } },
       { "@type": "Question", name: "Berapa soal dan waktu SKD?", acceptedAnswer: { "@type": "Answer", text: "110 soal 100 menit: TWK 30, TIU 35, TKP 45." } },
-      { "@type": "Question", name: "Apakah CPNS Web gratis?", acceptedAnswer: { "@type": "Answer", text: "Gratis 1 tryout/hari + 3 latihan/hari, bisa nonton iklan 15 detik untuk tambah kuota." } },
+      { "@type": "Question", name: "Apa perbedaan SKD dan SKB?", acceptedAnswer: { "@type": "Answer", text: "SKD seleksi dasar TWK/TIU/TKP. SKB seleksi bidang sesuai formasi Guru/Nakes/Teknis." } },
+      { "@type": "Question", name: "Apakah ada Analisis AI?", acceptedAnswer: { "@type": "Answer", text: "Ada. AI rangkum kelemahan dan buat rencana 7 hari dari riwayat tryout kamu." } },
+      { "@type": "Question", name: "Bagaimana iklan reward bekerja?", acceptedAnswer: { "@type": "Answer", text: "Free lihat iklan setelah submit untuk buka pembahasan. Premium tanpa iklan." } },
+      { "@type": "Question", name: "Apakah ada leaderboard?", acceptedAnswer: { "@type": "Answer", text: "Ada. Top 100 nasional dan leaderboard khusus Tryout Akbar mingguan." } },
+      { "@type": "Question", name: "Apakah CPNS Web situs resmi BKN?", acceptedAnswer: { "@type": "Answer", text: "Bukan. Ini platform latihan mandiri, bukan situs resmi BKN/instansi pemerintah." } },
     ],
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />;
@@ -64,49 +68,6 @@ export default function Home() {
       <ResultPreview />
       <PricingFaq />
       <TrustSection />
-      <section className="flex-1 bg-white dark:bg-zinc-900">
-        <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card><CardHeader><CardTitle className="text-base">Simulasi CAT realistis</CardTitle><CardDescription>Timer, navigasi soal, dan hasil otomatis untuk melatih ritme sebelum hari ujian.</CardDescription></CardHeader></Card>
-            <Card><CardHeader><CardTitle className="text-base">Analisis yang bisa ditindaklanjuti</CardTitle><CardDescription>Lihat komponen yang perlu diperbaiki, bukan hanya angka skor total.</CardDescription></CardHeader></Card>
-            <Card><CardHeader><CardTitle className="text-base">SKD sampai SKB</CardTitle><CardDescription>Latihan SKD dan tiga formasi SKB dalam satu akun.</CardDescription></CardHeader></Card>
-          </div>
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-            <span><strong className="text-zinc-900 dark:text-white">900+</strong> soal</span><span><strong className="text-zinc-900 dark:text-white">110</strong> soal simulasi</span><span><strong className="text-zinc-900 dark:text-white">100 menit</strong> timer CAT</span><span><strong className="text-zinc-900 dark:text-white">3</strong> formasi SKB</span>
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="bg-zinc-50 dark:bg-zinc-950 border-t">
-        <div className="max-w-6xl mx-auto px-4 py-12">
-          <h2 className="font-semibold text-zinc-900 dark:text-white">Cara kerja — 3 langkah lulus SKD</h2>
-          <div className="grid md:grid-cols-3 gap-6 mt-6">
-            <div className="flex gap-3">
-              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold shrink-0">1</span>
-              <div>
-                <p className="font-medium text-sm">Daftar & Pilih Tryout</p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">Pilih Tryout #1 (110 soal) atau Latihan 10 soal. Soal diacak tiap sesi.</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold shrink-0">2</span>
-              <div>
-                <p className="font-medium text-sm">Kerjakan 100 Menit</p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">Grid 1-110, tandai ragu-ragu, auto-save tiap 10 detik. Refresh tidak hilang.</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold shrink-0">3</span>
-              <div>
-                <p className="font-medium text-sm">Lihat Hasil & Pembahasan</p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">Skor TWK/TIU/TKP + LULUS/TIDAK + pembahasan per soal + rencana 7 hari (AI).</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <FAQSchema />
       <footer className="bg-white dark:bg-zinc-900 border-t">
